@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/*
+ * Elúa brand tokens. Source: brand/BRAND.md and docs/Elua-Kitchen-Fase-1.pdf §08.
+ * café is too light for small text (2.3:1 on crema), so text uses tinta and
+ * interactive elements use cafe-oscuro.
+ */
+@theme {
+  --color-cafe: #d8854c;
+  --color-cafe-oscuro: #9a5426;
+  --color-crema: #fae5d6;
+  --color-crema-claro: #fdf4ee;
+  --color-coral: #f4917a;
+  --color-celeste: #8fc7c9;
+  --color-tinta: #3a2a20;
+  --color-tinta-suave: #6b5446;
+  --color-borde: #efd9c8;
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-crema-claro);
+  color: var(--color-tinta);
+}
