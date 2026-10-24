@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateRecipeDraft, type RecipeDraft } from "./recipes";
+import { draftFromVersion, validateRecipeDraft, versionChanged, type RecipeDraft } from "./recipes";
 
 const catalog = [
   { id: 1, grams_per_unit: null },
@@ -114,5 +114,35 @@ describe("validateRecipeDraft", () => {
     expect(result).toEqual({
       errors: { base_yield: "Escribe cuántas piezas salen (1 o más).", "steps.0.duration_minutes": "Minutos enteros, 1 o más." },
     });
+  });
+});
+
+describe("draftFromVersion and versionChanged", () => {
+  const saved = {
+    baseYield: 10,
+    components: [{ name: "Masa", lines: [{ ingredientId: 1, quantity: 500, unit: "g" as const, countsAsFlour: true }] }],
+    steps: [
+      { name: "Pliegues", isManual: false, durationMinutes: 5, repeats: 4, intervalMinutes: 30 },
+      { name: "Formado", isManual: true, durationMinutes: null, repeats: 1, intervalMinutes: null },
+    ],
+  };
+  const payloadOf = (d: RecipeDraft) => {
+    const result = validateRecipeDraft(d, catalog);
+    if (!("payload" in result)) throw new Error(JSON.stringify(result.errors));
+    return result.payload.version;
+  };
+
+  it("round-trips a saved version without changes", () => {
+    const original = payloadOf(draftFromVersion("Rollos", "dulce", saved));
+    const reloaded = payloadOf({ ...draftFromVersion("Rollos de canela", "salado", saved), change_note: "solo el nombre" });
+    expect(versionChanged(original, reloaded)).toBe(false);
+  });
+
+  it("notices a new quantity or yield", () => {
+    const original = payloadOf(draftFromVersion("Rollos", "dulce", saved));
+    const edited = draftFromVersion("Rollos", "dulce", saved);
+    expect(versionChanged(original, payloadOf({ ...edited, base_yield: "12" }))).toBe(true);
+    edited.components[0].lines[0].quantity = "520";
+    expect(versionChanged(original, payloadOf(edited))).toBe(true);
   });
 });

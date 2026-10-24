@@ -129,3 +129,44 @@ export function validateRecipeDraft(draft: RecipeDraft, catalog: CatalogEntry[])
 export function toJson(version: VersionPayload): Json {
   return version as unknown as Json;
 }
+
+/** True when two versions differ in anything that affects a calculation or the process. The note doesn't count. */
+export function versionChanged(a: VersionPayload, b: VersionPayload): boolean {
+  const comparable = (version: VersionPayload) => JSON.stringify({ ...version, change_note: null });
+  return comparable(a) !== comparable(b);
+}
+
+type SavedVersion = {
+  baseYield: number;
+  components: { name: string; lines: { ingredientId: number; quantity: number; unit: Unit; countsAsFlour: boolean }[] }[];
+  steps: { name: string; isManual: boolean; durationMinutes: number | null; repeats: number; intervalMinutes: number | null }[];
+};
+
+/** The editable draft for a saved recipe version. Keys follow positions, so they match between server and client. */
+export function draftFromVersion(name: string, category: RecipeCategory, version: SavedVersion): RecipeDraft {
+  return {
+    name,
+    category,
+    base_yield: String(version.baseYield),
+    change_note: "",
+    components: version.components.map((component, c) => ({
+      key: `c${c}`,
+      name: component.name,
+      lines: component.lines.map((line, l) => ({
+        key: `c${c}-l${l}`,
+        ingredient_id: line.ingredientId,
+        quantity: String(line.quantity),
+        unit: line.unit,
+        counts_as_flour: line.countsAsFlour,
+      })),
+    })),
+    steps: version.steps.map((step, s) => ({
+      key: `s${s}`,
+      name: step.name,
+      is_manual: step.isManual,
+      duration_minutes: step.durationMinutes === null ? "" : String(step.durationMinutes),
+      repeats: step.isManual || step.repeats === 1 ? "" : String(step.repeats),
+      interval_minutes: step.intervalMinutes === null ? "" : String(step.intervalMinutes),
+    })),
+  };
+}

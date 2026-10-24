@@ -148,6 +148,9 @@ isOneToOne: false
                            },
 "create_recipe":
 { Args: { "p_category": Database["public"]['Enums']["recipe_category"],"p_name": string,"p_photo_path"?: string,"p_version": Json }; Returns: number
+                           },
+"update_recipe":
+{ Args: { "p_category": Database["public"]['Enums']["recipe_category"],"p_expected_version": number,"p_name": string,"p_photo_path"?: string,"p_recipe_id": number,"p_version"?: Json }; Returns: number
                            }
           }
           Enums: {

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { loadCatalog, uploadRecipePhoto } from "@/lib/recipe-data";
 import { toJson, validateRecipeDraft, type RecipeDraft } from "@/lib/recipes";
@@ -33,5 +34,6 @@ export async function createRecipe(_prev: RecipeFormState, formData: FormData): 
     return { status: "error", message: "No se pudo guardar la receta. Intenta de nuevo." };
   }
 
+  revalidatePath("/recetas", "layout");
   redirect(`/recetas/${recipeId}`);
 }

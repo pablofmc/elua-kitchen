@@ -28,6 +28,20 @@ export default function NuevaRecetaPage() {
 
 async function NewRecipeForm() {
   const supabase = await createClient();
-  const ingredients = await loadCatalog(supabase);
-  return <RecipeForm action={createRecipe} ingredients={ingredients} initial={emptyDraft()} submitLabel="Guardar receta" withPhoto />;
+  const [ingredients, { data: latest }] = await Promise.all([
+    loadCatalog(supabase),
+    supabase.from("recipes").select("id").order("id", { ascending: false }).limit(1).maybeSingle(),
+  ]);
+  // Next keeps visited pages alive with their state. Keying on the newest recipe empties the form
+  // after a save, so the next visit doesn't start from the recipe that was just created.
+  return (
+    <RecipeForm
+      key={latest?.id ?? 0}
+      action={createRecipe}
+      ingredients={ingredients}
+      initial={emptyDraft()}
+      submitLabel="Guardar receta"
+      withPhoto
+    />
+  );
 }
