@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { bakersPercent, hydration, lineGrams, parsePieces, scaleRecipe, totalGrams, type CalcLine, type CalcRecipe } from "./index";
-import { formatFactor, formatGrams, formatPercent, formatQuantity } from "./format";
+import { formatFactor, formatGrams, formatList, formatPercent, formatQuantity } from "./format";
 
 // Golden cases from .claude/skills/elua-calculos/SKILL.md. Test fixtures, not Elúa's real recipes.
 
@@ -106,5 +106,34 @@ describe("pieces and factor", () => {
     expect(formatFactor(scaleRecipe(rolls, 25).factor)).toBe("×2.5");
     expect(formatFactor(scaleRecipe(classic, 1).factor)).toBe("×1");
     expect(formatFactor(1 / 3)).toBe("×0.33");
+  });
+});
+
+describe("copy list", () => {
+  it("groups a recipe with several parts under their names", () => {
+    expect(formatList("Rollos de canela", scaleRecipe(rolls, 30))).toBe(
+      [
+        "Rollos de canela · 30 piezas (×3)",
+        "",
+        "MASA",
+        "Harina: 1,500 g",
+        "Leche: 780 g",
+        "Huevo: 3 huevos (≈ 150 g)",
+        "Azúcar: 180 g",
+        "",
+        "RELLENO",
+        "Mantequilla: 240 g",
+        "Azúcar: 210 g",
+        "Canela: 27.0 g",
+        "",
+        "Total, antes de hornear: 3,087 g",
+      ].join("\n"),
+    );
+  });
+
+  it("skips the heading for a one-part recipe", () => {
+    expect(formatList("Hogaza", scaleRecipe(classic, 1))).toBe(
+      ["Hogaza · 1 pieza (×1)", "", "Harina: 350 g", "Agua: 220 g", "Masa madre: 70.0 g", "Sal: 7.0 g", "", "Total, antes de hornear: 647 g"].join("\n"),
+    );
   });
 });

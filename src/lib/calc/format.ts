@@ -1,5 +1,5 @@
 import type { Unit } from "@/lib/ingredients";
-import { lineGrams } from "./index";
+import { lineGrams, totalGrams, type CalcRecipe } from "./index";
 
 const whole = new Intl.NumberFormat("es-MX", { maximumFractionDigits: 0 });
 const oneDecimal = new Intl.NumberFormat("es-MX", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -44,4 +44,21 @@ const factorFormat = new Intl.NumberFormat("es-MX", { maximumFractionDigits: 2 }
 /** The scaling factor as a short label: 3 → "×3", 2.5 → "×2.5", 1/3 → "×0.33". */
 export function formatFactor(factor: number): string {
   return `×${factorFormat.format(factor)}`;
+}
+
+/**
+ * The calculation as plain text to paste in WhatsApp or notes. Same number rules as the screen;
+ * part headings only when the recipe has more than one part.
+ */
+export function formatList(name: string, scaled: CalcRecipe & { factor: number }): string {
+  const pieces = scaled.baseYield;
+  const lines = [`${name} · ${whole.format(pieces)} ${pieces === 1 ? "pieza" : "piezas"} (${formatFactor(scaled.factor)})`];
+  const several = scaled.components.length > 1;
+  for (const component of scaled.components) {
+    lines.push("");
+    if (several) lines.push(component.name.toUpperCase());
+    for (const line of component.lines) lines.push(`${line.name}: ${formatQuantity(line)}`);
+  }
+  lines.push("", `Total, antes de hornear: ${formatGrams(totalGrams(scaled))}`);
+  return lines.join("\n");
 }
