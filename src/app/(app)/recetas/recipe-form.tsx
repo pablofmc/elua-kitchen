@@ -5,6 +5,7 @@ import { startTransition, useActionState, useRef, useState } from "react";
 import { FieldError } from "@/components/field-error";
 import { cardClass, inputClass, labelClass, primaryButtonClass } from "@/components/ui";
 import { UNIT_SHORT, type IngredientKind, type Unit } from "@/lib/ingredients";
+import { shrinkFormImage } from "@/lib/shrink-image";
 import {
   CATEGORY_LABELS,
   validateRecipeDraft,
@@ -28,11 +29,13 @@ type Props = {
   /** Shown when editing: the note that explains a new version. */
   withChangeNote?: boolean;
   withPhoto?: boolean;
+  /** After an import: why a field was left empty, keyed like errors. */
+  review?: DraftErrors;
 };
 
 const idle: RecipeFormState = { status: "idle" };
 
-export function RecipeForm({ action, ingredients, initial, submitLabel, withChangeNote = false, withPhoto = false }: Props) {
+export function RecipeForm({ action, ingredients, initial, submitLabel, withChangeNote = false, withPhoto = false, review = {} }: Props) {
   const [state, formAction, pending] = useActionState(action, idle);
   const [draft, setDraft] = useState<RecipeDraft>(initial);
   const [clientErrors, setClientErrors] = useState<DraftErrors | null>(null);
@@ -69,7 +72,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
     });
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const checked = validateRecipeDraft(draft, ingredients);
     if ("errors" in checked) {
@@ -78,7 +81,13 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
     }
     const formData = new FormData(event.currentTarget);
     formData.set("draft", JSON.stringify(draft));
+    await shrinkFormImage(formData, "photo");
     startTransition(() => formAction(formData));
+  }
+
+  // Notes from an import on fields it left empty; each disappears once its field is filled.
+  function reviewNote(key: string, empty: boolean, errorPath = key) {
+    return empty && !errors[errorPath] ? review[key] : undefined;
   }
 
   return (
@@ -96,6 +105,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
             className={inputClass}
           />
           <FieldError id="recipe-name-error" message={errors.name} />
+          <ReviewNote id="recipe-name-review" message={reviewNote("name", !draft.name.trim())} />
         </div>
 
         <fieldset>
@@ -121,6 +131,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
             ))}
           </div>
           <FieldError id="recipe-category-error" message={errors.category} />
+          <ReviewNote id="recipe-category-review" message={reviewNote("category", draft.category === "")} />
         </fieldset>
 
         <div>
@@ -135,6 +146,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
             className={`${inputClass} max-w-40`}
           />
           <FieldError id="recipe-yield-error" message={errors.base_yield} />
+          <ReviewNote id="recipe-yield-review" message={reviewNote("base_yield", !draft.base_yield.trim())} />
         </div>
 
         {withPhoto ? (
@@ -155,6 +167,10 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Ingredientes</h2>
         <FieldError id="components-error" message={errors.components} />
+        <ReviewNote
+          id="components-review"
+          message={reviewNote("components", draft.components.every((component) => component.lines.every((line) => line.ingredient_id === null)))}
+        />
         {draft.components.map((component, c) => (
           <div key={component.key} className={`${cardClass} overflow-hidden`}>
             <div className="flex items-end gap-2 border-b border-borde bg-crema px-4 py-3">
@@ -203,6 +219,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
                         ))}
                       </select>
                       <FieldError id={`${line.key}-ingredient-error`} message={errors[`${path}.ingredient_id`]} />
+                      <ReviewNote id={`${line.key}-ingredient-review`} message={reviewNote(`${line.key}.ingredient_id`, line.ingredient_id === null, `${path}.ingredient_id`)} />
                     </div>
                     <div className="flex items-start gap-2">
                       <div className="flex-1">
@@ -239,6 +256,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
                       ) : null}
                     </div>
                     <FieldError id={`${line.key}-quantity-error`} message={errors[`${path}.quantity`]} />
+                    <ReviewNote id={`${line.key}-quantity-review`} message={reviewNote(`${line.key}.quantity`, !line.quantity.trim(), `${path}.quantity`)} />
                     <FieldError id={`${line.key}-unit-error`} message={errors[`${path}.unit`]} />
                     <label className="flex min-h-11 items-center gap-3 text-sm">
                       <input
@@ -326,13 +344,17 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
                 Manual: sin tiempo, se marca al terminar
               </label>
               {step.is_manual ? null : (
-                <div className="grid grid-cols-3 gap-2">
-                  <NumberField id={`${step.key}-duration`} label="Minutos" value={step.duration_minutes} error={errors[`${path}.duration_minutes`]} onChange={(value) => updateStep(s, { duration_minutes: value })} />
-                  <NumberField id={`${step.key}-repeats`} label="Veces" value={step.repeats} placeholder="1" error={errors[`${path}.repeats`]} onChange={(value) => updateStep(s, { repeats: value })} />
-                  {repeats > 1 ? (
-                    <NumberField id={`${step.key}-interval`} label="Cada (min)" value={step.interval_minutes} error={errors[`${path}.interval_minutes`]} onChange={(value) => updateStep(s, { interval_minutes: value })} />
-                  ) : null}
-                </div>
+                <>
+                  <div className="grid grid-cols-3 gap-2">
+                    <NumberField id={`${step.key}-duration`} label="Minutos" value={step.duration_minutes} error={errors[`${path}.duration_minutes`]} onChange={(value) => updateStep(s, { duration_minutes: value })} />
+                    <NumberField id={`${step.key}-repeats`} label="Veces" value={step.repeats} placeholder="1" error={errors[`${path}.repeats`]} onChange={(value) => updateStep(s, { repeats: value })} />
+                    {repeats > 1 ? (
+                      <NumberField id={`${step.key}-interval`} label="Cada (min)" value={step.interval_minutes} error={errors[`${path}.interval_minutes`]} onChange={(value) => updateStep(s, { interval_minutes: value })} />
+                    ) : null}
+                  </div>
+                  <ReviewNote id={`${step.key}-duration-review`} message={reviewNote(`${step.key}.duration_minutes`, !step.duration_minutes.trim(), `${path}.duration_minutes`)} />
+                  <ReviewNote id={`${step.key}-interval-review`} message={reviewNote(`${step.key}.interval_minutes`, repeats > 1 && !step.interval_minutes.trim(), `${path}.interval_minutes`)} />
+                </>
               )}
             </div>
           );
@@ -373,6 +395,17 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
         </button>
       </div>
     </form>
+  );
+}
+
+/** A field an import left empty, marked with a celeste dot so it reads as "check this", not as an error. */
+function ReviewNote({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="mt-1 text-sm text-tinta-suave">
+      <span className="mr-1 inline-block size-2 rounded-full bg-celeste" aria-hidden />
+      {message}
+    </p>
   );
 }
 

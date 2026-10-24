@@ -22,10 +22,9 @@ export default function RecetasPage() {
         <Link href="/recetas/nueva" className={primaryButtonClass}>
           Nueva receta
         </Link>
-        <button type="button" disabled aria-describedby="import-soon" className={secondaryButtonClass}>
+        <Link href="/recetas/importar" className={secondaryButtonClass}>
           Importar
-        </button>
-        <p id="import-soon" className="col-span-2 -mt-1 text-xs text-tinta-suave">Importar desde texto o foto llega pronto.</p>
+        </Link>
       </div>
       <Suspense fallback={<p className="text-sm text-tinta-suave">Cargando recetas…</p>}>
         <Recipes />
