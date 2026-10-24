@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { bakersPercent, hydration, lineGrams, scaleRecipe, totalGrams, type CalcLine, type CalcRecipe } from "./index";
-import { formatGrams, formatPercent, formatQuantity } from "./format";
+import { bakersPercent, hydration, lineGrams, parsePieces, scaleRecipe, totalGrams, type CalcLine, type CalcRecipe } from "./index";
+import { formatFactor, formatGrams, formatPercent, formatQuantity } from "./format";
 
 // Golden cases from .claude/skills/elua-calculos/SKILL.md. Test fixtures, not Elúa's real recipes.
 
@@ -85,5 +85,26 @@ describe("hydration (classic)", () => {
 
   it("is null without flour", () => {
     expect(hydration({ baseYield: 1, components: [{ name: "Relleno", lines: [line("Azúcar", "azucar", 70)] }] })).toBeNull();
+  });
+});
+
+describe("pieces and factor", () => {
+  it("takes whole pieces from 1 to 9,999", () => {
+    expect(parsePieces("30")).toBe(30);
+    expect(parsePieces(" 2.6 ")).toBe(3);
+    expect(parsePieces("1,200")).toBe(1200);
+    expect(parsePieces("0")).toBe(1);
+    expect(parsePieces("-4")).toBe(1);
+    expect(parsePieces("50000")).toBe(9999);
+    expect(parsePieces("")).toBeNull();
+    expect(parsePieces("muchos")).toBeNull();
+    expect(parsePieces(null)).toBeNull();
+  });
+
+  it("labels the factor in es-MX", () => {
+    expect(formatFactor(scaleRecipe(rolls, 30).factor)).toBe("×3");
+    expect(formatFactor(scaleRecipe(rolls, 25).factor)).toBe("×2.5");
+    expect(formatFactor(scaleRecipe(classic, 1).factor)).toBe("×1");
+    expect(formatFactor(1 / 3)).toBe("×0.33");
   });
 });

@@ -110,6 +110,6 @@ export async function addIngredients(items: NewIngredientInput[]): Promise<AddSt
     if (error && error.code !== DUPLICATE) return { message: "No se pudieron agregar los ingredientes. Intenta de nuevo." };
   }
 
-  revalidatePath("/recetas", "layout");
+  revalidatePath("/", "layout");
   return { catalog: await loadCatalog(supabase) };
 }

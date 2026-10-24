@@ -69,9 +69,16 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">,
       </header>
 
       <div className="grid grid-cols-2 gap-2">
-        <button type="button" disabled aria-describedby="coming-next" className={primaryButtonClass}>Calcular</button>
+        {detail.isCurrent ? (
+          <Link href={`/calcular?receta=${detail.id}`} className={primaryButtonClass}>Calcular</Link>
+        ) : (
+          <button type="button" disabled aria-describedby="old-version-calc" className={primaryButtonClass}>Calcular</button>
+        )}
         <button type="button" disabled aria-describedby="coming-next" className={secondaryButtonClass}>Iniciar proceso</button>
-        <p id="coming-next" className="col-span-2 -mt-1 text-xs text-tinta-suave">Calcular e Iniciar proceso llegan en los siguientes hitos.</p>
+        {!detail.isCurrent ? (
+          <p id="old-version-calc" className="col-span-2 -mt-1 text-xs text-tinta-suave">Calcular usa la versión actual de la receta.</p>
+        ) : null}
+        <p id="coming-next" className="col-span-2 -mt-1 text-xs text-tinta-suave">Iniciar proceso llega en un siguiente hito.</p>
       </div>
 
       <RecipeView recipe={detail.recipe} />

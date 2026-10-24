@@ -29,7 +29,7 @@ export async function createIngredient(prev: IngredientFormState, formData: Form
       : { status: "error", message: "No se pudo guardar. Intenta de nuevo.", saves };
   }
 
-  revalidatePath("/recetas", "layout");
+  revalidatePath("/", "layout");
   refresh();
   return { status: "saved", savedName: parsed.data.name, saves: saves + 1 };
 }
@@ -47,7 +47,7 @@ export async function updateIngredient(id: number, _prev: IngredientFormState, f
   }
   if (count === 0) return { status: "error", message: "Ese ingrediente ya no existe." };
 
-  // Ingredient names show on every recipe page.
-  revalidatePath("/recetas", "layout");
+  // Ingredient names show on every recipe page and in Calcular.
+  revalidatePath("/", "layout");
   redirect("/recetas/ingredientes");
 }

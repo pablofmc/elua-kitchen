@@ -54,7 +54,7 @@ export async function updateRecipe(recipeId: number, expectedVersion: number, _p
   }
   if (photo.path && current.photoPath) await supabase.storage.from("recipe-photos").remove([current.photoPath]);
 
-  // Drop prefetched copies of the recipe pages (the edit form included) so nothing shows the old version.
-  revalidatePath("/recetas", "layout");
+  // Drop prefetched copies of the recipe pages, the edit form and Calcular so nothing shows the old version.
+  revalidatePath("/", "layout");
   redirect(`/recetas/${recipeId}`);
 }
