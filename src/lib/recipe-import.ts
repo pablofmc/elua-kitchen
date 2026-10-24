@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { KIND_LABELS, type IngredientKind, type Unit } from "@/lib/ingredients";
-import type { DraftErrors, RecipeDraft } from "@/lib/recipes";
+import { splitMinutes, type DraftErrors, type RecipeDraft } from "@/lib/recipes";
 
 /**
  * What the AI returns when it reads a pasted or photographed recipe. Anything it can't read is
@@ -117,7 +117,7 @@ export function draftFromImport(
         key: `s${s}`,
         name: cleanName(step.name),
         is_manual: step.is_manual,
-        duration_minutes: step.is_manual ? "" : text(duration),
+        ...splitMinutes(step.is_manual ? null : duration),
         repeats: step.is_manual ? "" : text(repeats),
         interval_minutes: step.is_manual || repeats === null ? "" : text(step.interval_minutes),
       };

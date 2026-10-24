@@ -58,9 +58,9 @@ describe("draftFromImport", () => {
   it("leaves unreadable amounts and times empty instead of guessing", () => {
     expect(draft.components[1].lines[1].quantity).toBe("");
     expect(review["c1-l1.quantity"]).toContain("Canela");
-    expect(draft.steps[2].duration_minutes).toBe("");
+    expect(draft.steps[2]).toMatchObject({ duration_hours: "", duration_minutes: "" });
     expect(review["s2.duration_minutes"]).toBeDefined();
-    expect(draft.steps[1]).toMatchObject({ duration_minutes: "5", repeats: "4", interval_minutes: "30" });
+    expect(draft.steps[1]).toMatchObject({ duration_hours: "", duration_minutes: "5", repeats: "4", interval_minutes: "30" });
   });
 
   it("flags a missing name, category and yield", () => {
@@ -73,7 +73,7 @@ describe("draftFromImport", () => {
     const fuller = [...catalog, { id: 4, name: "Mantequilla", kind: "grasa" as const, default_unit: "g" as const }, { id: 5, name: "canela", kind: "otro" as const, default_unit: "g" as const }];
     const again = draftFromImport(rollos, fuller).draft;
     again.components[1].lines[1].quantity = "8";
-    again.steps[2].duration_minutes = "180";
+    again.steps[2].duration_hours = "3";
     const checked = validateRecipeDraft(again, fuller.map((item) => ({ id: item.id, grams_per_unit: item.id === 3 ? 50 : null })));
     expect(checked).toHaveProperty("payload");
   });

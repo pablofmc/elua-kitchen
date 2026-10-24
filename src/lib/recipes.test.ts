@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { draftFromVersion, validateRecipeDraft, versionChanged, type RecipeDraft } from "./recipes";
+import { draftFromVersion, splitMinutes, validateRecipeDraft, versionChanged, type RecipeDraft } from "./recipes";
 
 const catalog = [
   { id: 1, grams_per_unit: null },
@@ -23,8 +23,8 @@ function draft(overrides: Partial<RecipeDraft> = {}): RecipeDraft {
       },
     ],
     steps: [
-      { key: "s1", name: "Pliegues", is_manual: false, duration_minutes: "5", repeats: "4", interval_minutes: "30" },
-      { key: "s2", name: "Formado", is_manual: true, duration_minutes: "", repeats: "", interval_minutes: "" },
+      { key: "s1", name: "Pliegues", is_manual: false, duration_hours: "", duration_minutes: "5", repeats: "4", interval_minutes: "30" },
+      { key: "s2", name: "Formado", is_manual: true, duration_hours: "", duration_minutes: "", repeats: "", interval_minutes: "" },
     ],
     ...overrides,
   };
@@ -90,7 +90,7 @@ describe("validateRecipeDraft", () => {
           },
           { key: "c2", name: "Relleno", lines: [] },
         ],
-        steps: [{ key: "s", name: "Pliegues", is_manual: false, duration_minutes: "5", repeats: "4", interval_minutes: "" }],
+        steps: [{ key: "s", name: "Pliegues", is_manual: false, duration_hours: "", duration_minutes: "5", repeats: "4", interval_minutes: "" }],
       }),
       catalog,
     );
@@ -108,12 +108,33 @@ describe("validateRecipeDraft", () => {
 
   it("rejects fractional pieces and minutes", () => {
     const result = validateRecipeDraft(
-      draft({ base_yield: "2.5", steps: [{ key: "s", name: "Reposo", is_manual: false, duration_minutes: "1.5", repeats: "", interval_minutes: "" }] }),
+      draft({ base_yield: "2.5", steps: [{ key: "s", name: "Reposo", is_manual: false, duration_hours: "", duration_minutes: "1.5", repeats: "", interval_minutes: "" }] }),
       catalog,
     );
     expect(result).toEqual({
-      errors: { base_yield: "Escribe cuántas piezas salen (1 o más).", "steps.0.duration_minutes": "Minutos enteros, 1 o más." },
+      errors: { base_yield: "Escribe cuántas piezas salen (1 o más).", "steps.0.duration_minutes": "Horas y minutos enteros; en total, 1 minuto o más." },
     });
+  });
+
+  it("adds hours and minutes into one length in minutes", () => {
+    const step = (duration_hours: string, duration_minutes: string) =>
+      draft({ steps: [{ key: "s", name: "Refrigerar", is_manual: false, duration_hours, duration_minutes, repeats: "", interval_minutes: "" }] });
+    const minutesOf = (result: ReturnType<typeof validateRecipeDraft>) => ("payload" in result ? result.payload.version.steps[0].duration_minutes : null);
+    expect(minutesOf(validateRecipeDraft(step("12", ""), catalog))).toBe(720);
+    expect(minutesOf(validateRecipeDraft(step("1", "30"), catalog))).toBe(90);
+    expect(minutesOf(validateRecipeDraft(step("", "45"), catalog))).toBe(45);
+    expect(validateRecipeDraft(step("", ""), catalog)).toHaveProperty("errors.steps\\.0\\.duration_minutes");
+    expect(validateRecipeDraft(step("0", "0"), catalog)).toHaveProperty("errors");
+    expect(validateRecipeDraft(step("-1", "90"), catalog)).toHaveProperty("errors");
+  });
+});
+
+describe("splitMinutes", () => {
+  it("shows whole hours as hours and leaves zero parts blank", () => {
+    expect(splitMinutes(720)).toEqual({ duration_hours: "12", duration_minutes: "" });
+    expect(splitMinutes(90)).toEqual({ duration_hours: "1", duration_minutes: "30" });
+    expect(splitMinutes(45)).toEqual({ duration_hours: "", duration_minutes: "45" });
+    expect(splitMinutes(null)).toEqual({ duration_hours: "", duration_minutes: "" });
   });
 });
 

@@ -12,6 +12,8 @@ export type StepDraft = {
   key: string;
   name: string;
   is_manual: boolean;
+  /** A step's length is typed as hours plus minutes and saved as minutes. */
+  duration_hours: string;
   duration_minutes: string;
   repeats: string;
   interval_minutes: string;
@@ -103,8 +105,10 @@ export function validateRecipeDraft(draft: RecipeDraft, catalog: CatalogEntry[])
       return { name: stepName, is_manual: true, duration_minutes: null, repeats: 1, interval_minutes: null };
     }
 
-    const duration = parseWhole(step.duration_minutes);
-    if (!(duration >= 1)) errors[`${path}.duration_minutes`] = "Minutos enteros, 1 o más.";
+    const hours = step.duration_hours.trim() === "" ? 0 : parseWhole(step.duration_hours);
+    const minutes = step.duration_minutes.trim() === "" ? 0 : parseWhole(step.duration_minutes);
+    const duration = hours * 60 + minutes;
+    if (!(hours >= 0 && minutes >= 0 && duration >= 1)) errors[`${path}.duration_minutes`] = "Horas y minutos enteros; en total, 1 minuto o más.";
     const repeats = step.repeats.trim() === "" ? 1 : parseWhole(step.repeats);
     if (!(repeats >= 1)) errors[`${path}.repeats`] = "Veces enteras, 1 o más.";
     let interval: number | null = null;
@@ -123,6 +127,14 @@ export function validateRecipeDraft(draft: RecipeDraft, catalog: CatalogEntry[])
       version: { base_yield: baseYield, change_note: draft.change_note.trim() || null, components, steps },
     },
   };
+}
+
+/** Splits a saved length into the form's hours and minutes; zero parts stay blank. */
+export function splitMinutes(total: number | null): { duration_hours: string; duration_minutes: string } {
+  if (total === null) return { duration_hours: "", duration_minutes: "" };
+  const hours = Math.floor(total / 60);
+  const minutes = total % 60;
+  return { duration_hours: hours ? String(hours) : "", duration_minutes: minutes ? String(minutes) : "" };
 }
 
 /** For passing the version payload to supabase-js `rpc()`. */
@@ -164,7 +176,7 @@ export function draftFromVersion(name: string, category: RecipeCategory, version
       key: `s${s}`,
       name: step.name,
       is_manual: step.isManual,
-      duration_minutes: step.durationMinutes === null ? "" : String(step.durationMinutes),
+      ...splitMinutes(step.durationMinutes),
       repeats: step.isManual || step.repeats === 1 ? "" : String(step.repeats),
       interval_minutes: step.intervalMinutes === null ? "" : String(step.intervalMinutes),
     })),
