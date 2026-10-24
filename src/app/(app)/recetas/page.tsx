@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { EmptyState } from "@/components/empty-state";
-import { primaryButtonClass } from "@/components/ui";
+import { primaryButtonClass, secondaryButtonClass } from "@/components/ui";
+import { loadRecipeSummaries } from "@/lib/recipe-data";
+import { createClient } from "@/lib/supabase/server";
+import { RecipeList } from "./recipe-list";
 
 export const metadata: Metadata = { title: "Recetas" };
 
@@ -14,10 +18,27 @@ export default function RecetasPage() {
           Ingredientes
         </Link>
       </div>
-      <Link href="/recetas/nueva" className={`${primaryButtonClass} w-full`}>
-        Nueva receta
-      </Link>
-      <EmptyState title="Aún no hay recetas">Crea una receta o impórtala desde un texto o una foto.</EmptyState>
+      <div className="grid grid-cols-2 gap-2">
+        <Link href="/recetas/nueva" className={primaryButtonClass}>
+          Nueva receta
+        </Link>
+        <button type="button" disabled aria-describedby="import-soon" className={secondaryButtonClass}>
+          Importar
+        </button>
+        <p id="import-soon" className="col-span-2 -mt-1 text-xs text-tinta-suave">Importar desde texto o foto llega pronto.</p>
+      </div>
+      <Suspense fallback={<p className="text-sm text-tinta-suave">Cargando recetas…</p>}>
+        <Recipes />
+      </Suspense>
     </div>
   );
+}
+
+async function Recipes() {
+  const supabase = await createClient();
+  const recipes = await loadRecipeSummaries(supabase);
+  if (recipes.length === 0) {
+    return <EmptyState title="Aún no hay recetas">Toca «Nueva receta» para capturar la primera.</EmptyState>;
+  }
+  return <RecipeList recipes={recipes} />;
 }
