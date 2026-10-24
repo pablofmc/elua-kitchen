@@ -55,6 +55,7 @@ export type RecipeDetail = {
   name: string;
   category: Database["public"]["Enums"]["recipe_category"];
   photoUrl: string | null;
+  photoPath: string | null;
   versions: VersionSummary[];
   version: VersionSummary;
   isCurrent: boolean;
@@ -105,6 +106,7 @@ export async function loadRecipeDetail(supabase: Client, recipeId: number, versi
     name: recipe.name,
     category: recipe.category,
     photoUrl: recipe.photo_path ? photoUrls.get(recipe.photo_path) ?? null : null,
+    photoPath: recipe.photo_path,
     versions,
     version,
     isCurrent: version.number === versions[0].number,

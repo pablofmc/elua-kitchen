@@ -39,7 +39,7 @@ async function EditIngredient({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div className={`${cardClass} p-4`}>
-      <IngredientForm action={updateIngredient.bind(null, id)} initial={data} submitLabel="Guardar cambios" idPrefix="edit" />
+      <IngredientForm key={JSON.stringify(data)} action={updateIngredient.bind(null, id)} initial={data} submitLabel="Guardar cambios" idPrefix="edit" />
       <p className="mt-4 text-sm text-tinta-suave">
         Los cambios aplican a todas las recetas que usan este ingrediente. Los lotes guardados no cambian.
       </p>

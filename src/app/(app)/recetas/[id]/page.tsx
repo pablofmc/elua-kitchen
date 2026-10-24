@@ -43,7 +43,14 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">,
         {detail.photoUrl ? (
           <Image src={detail.photoUrl} alt={detail.name} width={720} height={405} unoptimized className="aspect-video w-full rounded-2xl object-cover" />
         ) : null}
-        <h1 className="text-3xl font-extrabold tracking-tight">{detail.name}</h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-3xl font-extrabold tracking-tight">{detail.name}</h1>
+          {detail.isCurrent ? (
+            <Link href={`/recetas/${detail.id}/editar`} className={`${secondaryButtonClass} shrink-0 px-4 py-2`}>
+              Editar
+            </Link>
+          ) : null}
+        </div>
         <div className="flex flex-wrap gap-2 text-sm font-semibold">
           <span className={`rounded-full px-3 py-1 ${detail.category === "dulce" ? "bg-crema" : "bg-celeste/40"}`}>{CATEGORY_LABELS[detail.category]}</span>
           <span className="rounded-full border border-borde bg-white px-3 py-1">
@@ -82,6 +89,36 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">,
           </ol>
         </section>
       ) : null}
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">Versiones</h2>
+        <ol className={`${cardClass} divide-y divide-borde`}>
+          {detail.versions.map((version) => {
+            const viewing = version.number === detail.version.number;
+            return (
+              <li key={version.id}>
+                <Link
+                  href={version.number === detail.versions[0].number ? `/recetas/${detail.id}` : `/recetas/${detail.id}?version=${version.number}`}
+                  aria-current={viewing ? "page" : undefined}
+                  className={`flex min-h-14 items-center justify-between gap-3 px-4 py-3 outline-cafe-oscuro focus-visible:outline-2 ${viewing ? "bg-crema" : "hover:bg-crema-claro"}`}
+                >
+                  <span className="min-w-0">
+                    <span className="block font-semibold">
+                      Versión {version.number}
+                      {version.number === detail.versions[0].number ? " · actual" : ""}
+                    </span>
+                    <span className="block text-sm text-tinta-suave">
+                      {dateFormat.format(new Date(version.createdAt))} · rinde {version.baseYield}
+                      {version.changeNote ? ` · ${version.changeNote}` : ""}
+                    </span>
+                  </span>
+                  {viewing ? <span className="text-xs font-semibold text-tinta-suave">Viendo</span> : null}
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
     </article>
   );
 }
