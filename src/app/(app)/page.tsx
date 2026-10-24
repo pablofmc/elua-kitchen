@@ -9,7 +9,7 @@ export default function InicioPage() {
         className="block rounded-2xl bg-cafe-oscuro px-5 py-5 text-white shadow-sm hover:bg-tinta"
       >
         <span className="block text-lg font-semibold">Calcular producción</span>
-        <span className="text-sm text-crema">Piezas y peso, listo para pesar</span>
+        <span className="text-sm text-crema">Por piezas, listo para pesar</span>
       </Link>
 
       <section>

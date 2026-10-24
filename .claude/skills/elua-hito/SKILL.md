@@ -5,7 +5,7 @@ description: How to start, build and close an Elúa Kitchen milestone (hito M0�
 
 # Working a milestone (hito)
 
-Plan: `docs/Elua-Kitchen-Fase-1.pdf` (Spanish copy: `-ES.pdf`). §07 lists milestones, §02 scope and priorities, §09 the settled decisions. Project memory records progress.
+Plan: `docs/plan-fase-1.html` (Spanish; it replaces the PDFs, and its §10 lists what changed). Shared with the client at https://claude.ai/artifact/5TePFC38sSDdnFUmDuuwqQ — republish after editing. Domain terms: `GLOSSARY.md`. §07 lists milestones, §02 scope and priorities, §09 the settled decisions. Project memory records progress.
 
 ## Start
 

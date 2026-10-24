@@ -1,0 +1,396 @@
+<title>Elúa Kitchen · Fase 1</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap">
+<style>
+  /* Documento de una columna, como una ficha de cocina: secciones numeradas porque los skills las citan (§02, §04…). Solo tema claro, igual que la app en la Fase 1. */
+  :root {
+    --cafe: #d8854c;          /* logo, números de sección, titulares grandes */
+    --cafe-oscuro: #9a5426;   /* enlaces y texto pequeño de acento */
+    --crema: #fae5d6;         /* encabezados de tabla, tarjetas */
+    --crema-claro: #fdf4ee;   /* fondo */
+    --coral: #f4917a;         /* avisos, marcas de cambio */
+    --celeste: #8fc7c9;       /* estados, prioridad esencial */
+    --tinta: #3a2a20;         /* texto */
+    --tinta-suave: #6b5446;   /* texto secundario */
+    --borde: #efd9c8;
+    --papel: #fffdfb;
+    --font: "Montserrat", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --s-1: 0.8125rem; --s0: 1rem; --s1: 1.125rem; --s2: 1.375rem; --s3: 1.75rem; --s4: 2.5rem;
+  }
+  body {
+    background: var(--crema-claro);
+    color: var(--tinta);
+    font-family: var(--font);
+    font-size: var(--s0);
+    line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .doc { max-width: 52rem; margin: 0 auto; padding-block: 3rem 5rem; display: grid; gap: 3.5rem; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.2; }
+  p { margin: 0; max-width: 65ch; }
+  a { color: var(--cafe-oscuro); }
+  a:focus-visible { outline: 2px solid var(--cafe-oscuro); outline-offset: 2px; }
+  strong { font-weight: 600; }
+
+  /* Portada */
+  .cover { display: grid; gap: 1.25rem; padding-bottom: 2.5rem; border-bottom: 2px solid var(--cafe); }
+  .cover img { width: 11rem; height: auto; }
+  .eyebrow { font-size: var(--s-1); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cafe-oscuro); }
+  .cover h1 { font-size: clamp(2.25rem, 7vw, 3.5rem); font-weight: 800; letter-spacing: -0.02em; }
+  .lede { font-size: var(--s1); }
+  .meta { font-size: var(--s-1); color: var(--tinta-suave); }
+
+  /* Secciones */
+  section { display: grid; gap: 1.25rem; }
+  .sec-head { display: flex; align-items: baseline; gap: 0.875rem; }
+  .sec-num { font-size: var(--s3); font-weight: 800; color: var(--cafe); font-variant-numeric: tabular-nums; line-height: 1; }
+  .sec-head h2 { font-size: var(--s3); font-weight: 700; }
+  h3 { font-size: var(--s1); font-weight: 700; margin-top: 0.75rem; }
+  ul.plain { margin: 0; padding-left: 1.25rem; display: grid; gap: 0.35rem; }
+
+  .callout { background: var(--papel); border: 1px solid var(--borde); border-left: 4px solid var(--cafe); border-radius: 6px; padding: 1rem 1.25rem; display: grid; gap: 0.4rem; }
+  .callout.aviso { border-left-color: var(--coral); }
+  .callout h3 { margin: 0; font-size: var(--s0); }
+
+  /* Tablas */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; background: var(--papel); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  th, td { text-align: left; padding: 0.6rem 0.9rem; vertical-align: top; border-bottom: 1px solid var(--borde); }
+  tr:last-child td { border-bottom: 0; }
+  th { background: var(--crema); font-weight: 600; font-size: var(--s-1); letter-spacing: 0.04em; text-transform: uppercase; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.total td { font-weight: 700; border-top: 2px solid var(--borde); }
+  tr.grupo td { background: var(--crema-claro); font-size: var(--s-1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-suave); }
+  td.term { font-weight: 600; white-space: nowrap; }
+
+  .pill { display: inline-block; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 999px; white-space: nowrap; color: var(--tinta); }
+  .p-esencial { background: var(--celeste); }
+  .p-deseable { background: var(--crema); border: 1px solid var(--borde); }
+  .p-despues { background: transparent; border: 1px dashed var(--tinta-suave); color: var(--tinta-suave); }
+  .p-actual { background: var(--cafe-oscuro); color: #fff; }
+  .cambio { display: inline-block; margin-left: 0.4rem; font-size: 0.6875rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 4px; background: var(--coral); color: var(--tinta); white-space: nowrap; vertical-align: 0.1em; }
+
+  /* Pasos del flujo */
+  .flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 0.75rem; counter-reset: paso; }
+  .flow li { counter-increment: paso; background: var(--papel); border: 1px solid var(--borde); border-radius: 6px; padding: 1rem; display: grid; gap: 0.3rem; align-content: start; }
+  .flow li::before { content: "Paso " counter(paso); font-size: var(--s-1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cafe-oscuro); }
+  .flow strong { font-size: var(--s1); }
+
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.5rem 2rem; }
+  .screens div { display: grid; gap: 0.35rem; align-content: start; }
+  .screens h3 { margin: 0; }
+  .screens h3 small { font-weight: 500; color: var(--tinta-suave); font-size: var(--s-1); margin-left: 0.3rem; }
+  .screens ul { margin: 0; padding-left: 1.1rem; font-size: 0.9375rem; display: grid; gap: 0.2rem; }
+
+  .formula { font-family: var(--mono); font-size: 0.9375rem; background: var(--tinta); color: var(--crema-claro); border-radius: 6px; padding: 1rem 1.25rem; overflow-x: auto; white-space: pre; line-height: 1.7; }
+
+  .steps-proc { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.5rem; margin: 0; }
+  .steps-proc dt { font-weight: 600; }
+  .steps-proc dd { margin: 0; color: var(--tinta-suave); font-variant-numeric: tabular-nums; }
+
+  /* Hitos */
+  .milestones { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-left: 2px solid var(--borde); }
+  .milestones li { position: relative; padding: 0 0 1.25rem 1.5rem; display: grid; gap: 0.2rem; }
+  .milestones li::before { content: ""; position: absolute; left: -7px; top: 0.4rem; width: 12px; height: 12px; border-radius: 50%; background: var(--crema-claro); border: 2px solid var(--cafe); }
+  .milestones li.hecho::before { background: var(--cafe); }
+  .milestones .h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
+  .milestones .h b { font-variant-numeric: tabular-nums; color: var(--cafe-oscuro); }
+
+  /* Marca */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.75rem; }
+  .swatch { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; background: var(--papel); }
+  .swatch i { display: block; height: 3.5rem; }
+  .swatch div { padding: 0.6rem 0.75rem; display: grid; gap: 0.1rem; font-size: var(--s-1); }
+  .swatch b { font-size: var(--s0); }
+  .swatch code { font-family: var(--mono); color: var(--tinta-suave); }
+
+  /* Decisiones */
+  .decisions { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0.75rem; counter-reset: dec; }
+  .decisions li { counter-increment: dec; background: var(--papel); border: 1px solid var(--borde); border-radius: 6px; padding: 1rem; display: grid; gap: 0.3rem; align-content: start; }
+  .decisions li::before { content: counter(dec); font-weight: 800; font-size: var(--s2); color: var(--cafe); line-height: 1; }
+  .decisions .fecha { font-size: var(--s-1); color: var(--tinta-suave); }
+
+  .log { display: grid; gap: 1rem; }
+  .log article { display: grid; gap: 0.4rem; }
+  .log h3 { margin: 0; font-size: var(--s0); }
+
+  footer { font-size: var(--s-1); color: var(--tinta-suave); border-top: 1px solid var(--borde); padding-top: 1.25rem; }
+
+  @media (max-width: 30rem) {
+    .steps-proc { grid-template-columns: 1fr; }
+    .steps-proc dd { margin-bottom: 0.4rem; }
+  }
+  @media print {
+    body { background: #fff; }
+    .doc { padding-block: 0; gap: 2rem; }
+    section { break-inside: avoid-page; }
+  }
+</style>
+
+<main class="doc">
+
+  <header class="cover">
+    <img src="logo-elua.png" alt="Elúa, panadería y pastelería">
+    <span class="eyebrow">Fase 1 · Plan de implementación</span>
+    <h1>Elúa Kitchen</h1>
+    <p class="lede">Una herramienta interna para guardar las recetas de Elúa una sola vez y escalarlas a cualquier cantidad de piezas, sin calculadora ni Excel.</p>
+    <p class="meta">Documento de planificación · Versión 3 · Actualizado el 24 de octubre de 2026. Las partes que cambiaron en esta versión llevan la marca <span class="cambio">Cambió 24 oct</span>.</p>
+  </header>
+
+  <section id="s01">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Por qué empezamos por aquí</h2></div>
+    <p>La meta a largo plazo de Elúa es convertirse en una micropanadería. La Fase 1 construye la base de la que dependen las siguientes fases: un registro confiable y estructurado de cada receta y cada horneado.</p>
+    <h3>El problema que resolvemos</h3>
+    <p>Hoy, lo más difícil de producir es calcular los ingredientes y adaptar las recetas a distintas cantidades. Cada horneado implica recalcular a mano, lo que toma tiempo, se presta a errores y empeora conforme llegan más pedidos.</p>
+    <h3>El objetivo</h3>
+    <p>Guardar una receta una vez y obtener las cantidades exactas para cualquier producción en menos de un minuto, desde el celular. Por ejemplo, si la receta da 10 rollos de canela, pides «30 rollos» y obtienes una lista de ingredientes lista para pesar. <span class="cambio">Cambió 24 oct</span></p>
+    <h3>Dónde encaja la Fase 1</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fase</th><th>Enfoque</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td class="term">1 · Elúa Kitchen</td><td>Recetas, versiones, calculadora de escalado, lotes guardados</td><td><span class="pill p-actual">Este documento</span></td></tr>
+          <tr><td class="term">2 · Elúa Operations</td><td>Costos y márgenes, inventario, proveedores, calendario de producción, pedidos internos</td><td><span class="pill p-despues">Después</span></td></tr>
+          <tr><td class="term">3 · Elúa Online</td><td>Catálogo público, fechas de preventa, cupos, preórdenes de clientes</td><td><span class="pill p-despues">Después</span></td></tr>
+          <tr><td class="term">4 · Elúa Microbakery</td><td>Producción recurrente, demanda, desperdicio, ventas y reportes del negocio</td><td><span class="pill p-despues">Después</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <p>La Fase 1 es solo para ti. No hay nada público, ni clientes, pagos o inventario todavía. Aun así, los datos se estructuran para que costos, inventario y pedidos se puedan agregar después sin empezar de cero.</p>
+    </div>
+  </section>
+
+  <section id="s02">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Alcance</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Funcionalidad</th><th>Prioridad</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Recetario:</strong> crear, editar y consultar recetas con ingredientes, unidades, rendimiento e instrucciones. Cada receta es <strong>Dulce</strong> o <strong>Salado</strong>. <span class="cambio">Cambió 24 oct</span></td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Porcentajes panaderos:</strong> se muestran automáticamente en las recetas de pan, incluida la hidratación real contando la masa madre</td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Versiones de recetas:</strong> cambiar ingredientes, cantidades, rendimiento o pasos crea una versión nueva; las anteriores se conservan</td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Calculadora de escalado:</strong> por cantidad de piezas. Si la receta da 10 rollos y pides 30, todo se multiplica por 3. Cambiar el tamaño de la pieza queda para más adelante. <span class="cambio">Cambió 24 oct</span></td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Importar recetas:</strong> pegar una receta como texto o tomarle una foto; la IA llena el formulario y tú lo revisas antes de guardar</td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Temporizadores del proceso:</strong> cada receta conoce sus pasos (autólisis, pliegues, fermentación, reposo); tocas Iniciar y la app lleva los tiempos y te avisa</td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Lotes guardados:</strong> guardar una producción calculada con su fecha para consultarla después</td><td><span class="pill p-esencial">Esencial</span></td></tr>
+          <tr><td><strong>Componentes de receta:</strong> p. ej. rollos de canela = masa + relleno + frosting. Cada componente tiene sus propios ingredientes, y todos se escalan juntos con la receta. <span class="cambio">Cambió 24 oct</span></td><td><span class="pill p-deseable">Deseable</span></td></tr>
+          <tr><td><strong>Ajustar % de masa madre:</strong> cambiar el porcentaje de masa madre y recalcular harina y agua</td><td><span class="pill p-deseable">Deseable</span></td></tr>
+          <tr><td><strong>Notas de horneado:</strong> temperatura, tiempos, calificación de 1 a 5, notas y foto por lote</td><td><span class="pill p-deseable">Deseable</span></td></tr>
+          <tr><td>Planificador y alimentación de la masa madre; cambiar el tamaño de la pieza; costos, inventario, proveedores, calendario, pedidos de clientes, pagos</td><td><span class="pill p-despues">Fase 2+</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <h3>Criterio de terminado de la Fase 1</h3>
+      <p>Puedes guardar todas las recetas actuales de Elúa, calcular cualquier cantidad de piezas y consultar cálculos anteriores sin abrir Excel.</p>
+    </div>
+  </section>
+
+  <section id="s03">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Cómo funciona</h2></div>
+    <p>Un flujo principal, pensado para usarse con una mano en la cocina.</p>
+    <ol class="flow">
+      <li><strong>Elegir una receta</strong><span>Del recetario, p. ej. «Rollos de canela».</span></li>
+      <li><strong>Definir la producción</strong><span>Una receta a la vez: cuántas piezas quieres. <span class="cambio">Cambió 24 oct</span></span></li>
+      <li><strong>Obtener cantidades</strong><span>Gramos exactos por ingrediente, separados por componente.</span></li>
+      <li><strong>Guardar como lote</strong><span>Con su fecha y versión de receta, más notas después de hornear.</span></li>
+    </ol>
+    <h3>Pantallas</h3>
+    <p>En el celular hay una barra de navegación inferior (Inicio · Recetas · Calcular · Lotes). Un proceso activo aparece como aviso en todas las pantallas. En la computadora se convierte en un menú lateral.</p>
+    <div class="screens">
+      <div><h3>Inicio</h3><ul><li>Acceso directo: «Calcular producción»</li><li>Recetas usadas recientemente</li><li>Últimos lotes guardados</li></ul></div>
+      <div><h3>Recetas</h3><ul><li>Lista con búsqueda y filtro Dulce / Salado</li><li>Detalle: ingredientes, % panaderos, hidratación, instrucciones, versiones</li><li>Formulario para crear / editar con validaciones</li><li>Importar desde texto o foto → revisar → guardar</li></ul></div>
+      <div><h3>Calcular</h3><ul><li>Elegir una receta y cuántas piezas</li><li>Resultado separado por componente, con el peso total</li><li>Copiar lista · Guardar como lote</li></ul></div>
+      <div><h3>Lotes</h3><ul><li>Historial por fecha, con el estado de cada lote: planeado u horneado</li><li>Detalle del lote con las cantidades exactas usadas</li><li>Notas de horneado, calificación y foto (deseable)</li></ul></div>
+      <div><h3>Proceso</h3><ul><li>«Iniciar proceso» desde una receta o un lote</li><li>Paso actual, cuenta regresiva y lo que sigue: «Pliegue 2 de 4 · 30 min»</li><li>Aviso al terminar cada paso, aunque el celular esté bloqueado</li></ul></div>
+      <div><h3>Importar</h3><ul><li>Pegar texto o tomar foto de la receta</li><li>La IA sugiere ingredientes, cantidades, unidades y pasos</li><li>No se guarda nada hasta que confirmes</li></ul></div>
+    </div>
+  </section>
+
+  <section id="s04">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Reglas de cálculo</h2></div>
+    <p>La calculadora es el corazón de la aplicación, así que sus reglas quedan escritas aquí y se cubren con pruebas automatizadas.</p>
+
+    <h3>Escalado por piezas <span class="cambio">Cambió 24 oct</span></h3>
+    <div class="formula">factor         = piezas que quieres ÷ rendimiento base
+cantidad nueva = cantidad base × factor</div>
+    <p>Todos los ingredientes de todos los componentes se multiplican por el mismo factor. Ejemplo ilustrativo (los números reales llegan con las recetas de Elúa): rollos de canela con un rendimiento base de 10 rollos, para 30 rollos → factor 30 ÷ 10 = 3.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ingrediente</th><th class="num">Receta base · 10</th><th class="num">30 rollos</th></tr></thead>
+        <tbody>
+          <tr class="grupo"><td colspan="3">Masa</td></tr>
+          <tr><td>Harina</td><td class="num">500 g</td><td class="num">1,500 g</td></tr>
+          <tr><td>Leche</td><td class="num">260 g</td><td class="num">780 g</td></tr>
+          <tr><td>Huevo</td><td class="num">1 huevo (≈ 50 g)</td><td class="num">3 huevos (≈ 150 g)</td></tr>
+          <tr><td>Azúcar</td><td class="num">60 g</td><td class="num">180 g</td></tr>
+          <tr class="grupo"><td colspan="3">Relleno</td></tr>
+          <tr><td>Mantequilla</td><td class="num">80 g</td><td class="num">240 g</td></tr>
+          <tr><td>Azúcar</td><td class="num">70 g</td><td class="num">210 g</td></tr>
+          <tr><td>Canela</td><td class="num">9.0 g</td><td class="num">27.0 g</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Porcentajes panaderos e hidratación real</h3>
+    <p>La masa madre también contiene harina y agua, así que hay que contarla para obtener la hidratación real. Con la masa madre al 100 % de hidratación (fija en la Fase 1; la alimentación y otras hidrataciones llegan después), para un pan con harina 350 g, agua 220 g, masa madre 70 g y sal 7 g:</p>
+    <div class="formula">harina en masa madre = masa madre ÷ (1 + hidratación MM) → 70 ÷ 2 = 35 g
+harina total         = 350 + 35 = 385 g
+agua total           = 220 + 35 = 255 g
+hidratación real     = 255 ÷ 385 = 66.2 %   (agua ÷ solo harina añadida = 62.9 %)
+sal                  = 7 ÷ 385 = 1.8 % de la harina total</div>
+    <p>La aplicación muestra ambas vistas: porcentajes sobre la harina añadida (como se escriben la mayoría de las recetas) y sobre la harina total (hidratación real).</p>
+
+    <h3>Temporizadores del proceso</h3>
+    <p>Cada versión de receta guarda su proceso como una lista de pasos. Un paso tiene nombre, duración y, si aplica, cantidad de repeticiones con su intervalo. Ejemplo para un pan:</p>
+    <dl class="steps-proc">
+      <dt>Autólisis</dt><dd>30 min</dd>
+      <dt>Pliegues</dt><dd>4 × cada 30 min</dd>
+      <dt>Fermentación</dt><dd>3 h</dd>
+      <dt>Formado</dt><dd>manual: tocar al terminar</dd>
+      <dt>Reposo (refri)</dt><dd>12 h</dd>
+    </dl>
+    <p>Al tocar Iniciar arranca el primer paso. Cuando termina un tiempo te llega un aviso; los pasos manuales esperan a que toques «Listo». Los pasos se pueden pausar, extender (+10 min) u omitir, porque la masa no siempre sigue al reloj.</p>
+
+    <h3>Redondeo y precisión</h3>
+    <ul class="plain">
+      <li>Todos los cálculos mantienen precisión completa internamente; el redondeo solo ocurre en pantalla.</li>
+      <li>Los ingredientes de 100 g o más se muestran en gramos enteros. Las cantidades pequeñas (sal, levadura, especias) llevan un decimal.</li>
+      <li>Los ingredientes por unidad (huevos) siempre se muestran en unidades completas, redondeando al entero más cercano (la mitad sube, y nunca menos de 1), con su peso aproximado. P. ej. 25 rollos piden 2.5 huevos → «3 huevos (≈ 150 g)». <span class="cambio">Cambió 24 oct</span></li>
+      <li>Los números usan el formato de México: «1,750 g» y «34.6 g».</li>
+      <li>Los pesos son de masa antes de hornear. La aplicación lo indica claramente, porque el pan horneado pesa menos.</li>
+    </ul>
+  </section>
+
+  <section id="s05">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Cómo se organizan los datos</h2></div>
+    <p>Las recetas se guardan como datos estructurados, no como texto, para que la aplicación pueda calcular con ellas ahora y agregar costos, inventario y pedidos después.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Entidad</th><th>Qué contiene</th></tr></thead>
+        <tbody>
+          <tr><td class="term">Ingrediente</td><td>Catálogo compartido: nombre, tipo (harina, líquido, masa madre, sal, grasa, azúcar, otro), unidad por defecto. Más adelante aquí vivirán el costo y las existencias.</td></tr>
+          <tr><td class="term">Receta</td><td>Nombre, categoría (Dulce o Salado) y foto. <span class="cambio">Cambió 24 oct</span></td></tr>
+          <tr><td class="term">Versión de receta</td><td>Número de versión, fecha, nota del cambio y rendimiento base en piezas. Los ingredientes, el rendimiento y los pasos pertenecen a una versión, no directamente a la receta. <span class="cambio">Cambió 24 oct</span></td></tr>
+          <tr><td class="term">Componente</td><td>Parte opcional de una receta (Masa, Relleno, Frosting) con sus propias líneas de ingredientes.</td></tr>
+          <tr><td class="term">Línea de ingrediente</td><td>Ingrediente + cantidad + unidad (g, ml, unidad), y si cuenta como harina para los % panaderos.</td></tr>
+          <tr><td class="term">Paso del proceso</td><td>Pertenece a una versión de receta: orden, nombre, duración, repeticiones e intervalo, o «manual».</td></tr>
+          <tr><td class="term">Ejecución del proceso</td><td>Un proceso iniciado: hora de inicio, paso actual y la hora de cada paso (puede ligarse a un lote).</td></tr>
+          <tr><td class="term">Lote</td><td>Una receta calculada y guardada: fecha, estado (planeado u horneado), versión de receta usada, piezas planeadas, piezas reales (las que salieron), una copia fija de las cantidades calculadas, notas, calificación y foto. <span class="cambio">Cambió 24 oct</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <h3>Regla clave: el historial nunca cambia</h3>
+      <p>Un lote guarda la versión exacta de la receta y las cantidades que usó. Si mañana editas la receta, el lote de la semana pasada sigue mostrando lo que realmente hiciste.</p>
+    </div>
+  </section>
+
+  <section id="s06">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Tecnología</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parte</th><th>Elección</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td class="term">Aplicación</td><td>Next.js + TypeScript</td><td>Un solo código para la herramienta interna ahora y la tienda pública en la Fase 3</td></tr>
+          <tr><td class="term">Estilos</td><td>Tailwind CSS</td><td>Los colores de la marca se vuelven variables de diseño reutilizables</td></tr>
+          <tr><td class="term">Base de datos + acceso</td><td>Supabase (PostgreSQL)</td><td>Base de datos y autenticación administradas; el plan gratuito alcanza para una sola persona</td></tr>
+          <tr><td class="term">Hosting</td><td>Vercel</td><td>Publicación automática, funciona muy bien con Next.js; plan gratuito</td></tr>
+          <tr><td class="term">Pruebas</td><td>Vitest + Playwright</td><td>Pruebas unitarias para cada regla de cálculo; pruebas de punta a punta del flujo principal</td></tr>
+          <tr><td class="term">Importar recetas</td><td>Claude Haiku (API de Anthropic)</td><td>Lee texto pegado y fotos y devuelve la receta estructurada; unos centavos al mes con este volumen; la clave se guarda en el servidor</td></tr>
+          <tr><td class="term">Avisos</td><td>Web Push + tarea programada</td><td>Los avisos los envía el servidor para que lleguen con el celular bloqueado (en iPhone la app debe estar en la pantalla de inicio)</td></tr>
+          <tr><td class="term">Uso en el celular</td><td>App web instalable (PWA)</td><td>Se agrega a la pantalla de inicio como una app, sin tienda de aplicaciones</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Toda la aplicación requiere iniciar sesión. La futura tienda pública vivirá en una sección separada del mismo proyecto.</p>
+  </section>
+
+  <section id="s07">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Hitos</h2></div>
+    <p>Cada hito termina con algo que puedes usar y probar.</p>
+    <ol class="milestones">
+      <li class="hecho"><div class="h"><b>H0</b><strong>Base</strong><span class="pill p-esencial">Listo</span></div><p>Configuración del proyecto, base de datos y acceso en Supabase, tema de marca, navegación, publicado en una URL privada.</p></li>
+      <li><div class="h"><b>H1</b><strong>Recetario</strong></div><p>Catálogo de ingredientes, crear/editar/listar recetas, categorías Dulce y Salado, % panaderos e hidratación real, versiones, importar desde texto o foto. Cargar las recetas reales de Elúa.</p></li>
+      <li><div class="h"><b>H2</b><strong>Calculadora de escalado</strong><span class="cambio">Cambió 24 oct</span></div><p>Motor de cálculo con pruebas; escalado de una receta por piezas; reglas de redondeo; copiar lista.</p></li>
+      <li><div class="h"><b>H3</b><strong>Componentes de receta</strong><span class="cambio">Cambió 24 oct</span></div><p>Recetas con varias partes (masa, relleno, frosting): captura por componente y resultado del cálculo separado por componente.</p></li>
+      <li><div class="h"><b>H4</b><strong>Lotes</strong></div><p>Guardar la producción como lote con copia fija; historial; detalle del lote; notas y calificación del horneado.</p></li>
+      <li><div class="h"><b>H5</b><strong>Temporizadores del proceso</strong></div><p>Pasos del proceso por receta; iniciar, pausar, extender u omitir; avisos con el celular bloqueado.</p></li>
+      <li><div class="h"><b>H6</b><strong>Pulido y prueba en cocina</strong></div><p>Instalable en el celular, pruebas de punta a punta y un día real de producción usando solo la app.</p></li>
+    </ol>
+  </section>
+
+  <section id="s08">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Aplicación de la marca Elúa</h2></div>
+    <p>Tomada de los archivos de marca en Drive. La aplicación debe sentirse como Elúa sin sacrificar la legibilidad en una cocina con mucha luz.</p>
+    <div class="swatches">
+      <div class="swatch"><i style="background:#d8854c"></i><div><b>Café</b><code>#D8854C</code><span>Logo, destacados, títulos grandes</span></div></div>
+      <div class="swatch"><i style="background:#fae5d6"></i><div><b>Crema</b><code>#FAE5D6</code><span>Fondos, tarjetas, encabezados de tabla</span></div></div>
+      <div class="swatch"><i style="background:#f4917a"></i><div><b>Coral</b><code>#F4917A</code><span>Advertencias y estados de atención</span></div></div>
+      <div class="swatch"><i style="background:#8fc7c9"></i><div><b>Celeste</b><code>#8FC7C9</code><span>Información, estados, éxito</span></div></div>
+      <div class="swatch"><i style="background:#3a2a20"></i><div><b>Tinta</b><code>#3A2A20</code><span>Texto (11.3:1 sobre crema)</span></div></div>
+      <div class="swatch"><i style="background:#9a5426"></i><div><b>Café oscuro</b><code>#9A5426</code><span>Botones y enlaces (5.7:1 con texto blanco)</span></div></div>
+    </div>
+    <p>El café sobre fondos claros tiene poco contraste (2.3:1 sobre crema; el texto pequeño necesita al menos 4.5:1), por eso se agregaron tinta y café oscuro, dentro de la misma línea de marca.</p>
+    <ul class="plain">
+      <li><strong>Logo:</strong> la versión horizontal en el encabezado; el emblema con fondo de color como ícono de la app. El nombre «ELÚA» siempre se usa como imagen del logo, nunca escrito con una fuente.</li>
+      <li><strong>Patrones:</strong> solo como decoración sutil (estados vacíos, pantalla de inicio de sesión), nunca detrás de datos.</li>
+      <li><strong>Tipografía:</strong> Montserrat, la más parecida al descriptor del logo. En los archivos .ai el texto está convertido a trazos, así que no queda registrado el nombre de la fuente original.</li>
+    </ul>
+  </section>
+
+  <section id="s09">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Decisiones</h2></div>
+    <p>Estas decisiones definen el modelo de datos y los hitos.</p>
+    <ol class="decisions">
+      <li><strong>Registro de recetas</strong><p>Gramos y porcentajes panaderos, ingresando primero en gramos.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Carga de recetas</strong><p>Con la función de importar: pegas texto o tomas una foto, la IA llena el formulario y tú revisas. El ingreso manual sigue disponible si la IA se equivoca.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Unidades</strong><p>g, ml y unidades desde el inicio.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Masa madre</strong><p>El planificador y la alimentación pasan a una fase posterior. La Fase 1 asume masa madre al 100 % de hidratación para calcular la hidratación real.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Inicio de sesión</strong><p>Enlace mágico por correo.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Marca</strong><p>Paleta de los PNG y logos de los archivos .ai. La fuente no está registrada en los archivos, así que usamos Montserrat.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Temporizadores</strong><p>Entran en la Fase 1 (H5). Reemplazan el «Alexa, timer 30 minutos»: la app ya sabe cuántos pliegues hay y cuándo.</p><span class="fecha">16 oct 2026</span></li>
+      <li><strong>Escalado por piezas</strong><p>Se escala solo por cantidad de piezas. Cambiar el tamaño de la pieza queda para el futuro, cuando haga falta.</p><span class="fecha">24 oct 2026</span></li>
+      <li><strong>Componentes juntos</strong><p>Masa, relleno y frosting se escalan siempre con el mismo factor que la receta, nunca por separado.</p><span class="fecha">24 oct 2026</span></li>
+      <li><strong>Una receta a la vez</strong><p>La calculadora y los lotes trabajan con una sola receta. No hay producción combinada ni lista consolidada: Elúa no trabaja así.</p><span class="fecha">24 oct 2026</span></li>
+      <li><strong>Estados del lote</strong><p>Un lote nace como «planeado» al guardarlo desde Calcular y pasa a «horneado» cuando se hace. Al marcarlo se anotan las piezas reales, que pueden ser menos que las planeadas. Así el historial muestra lo que de verdad se horneó.</p><span class="fecha">24 oct 2026</span></li>
+      <li><strong>Qué crea una versión</strong><p>Cambiar ingredientes, cantidades, rendimiento base o pasos crea una versión nueva. Cambiar el nombre, la foto o la categoría no, porque no afecta ningún cálculo.</p><span class="fecha">24 oct 2026</span></li>
+      <li><strong>Categorías</strong><p>Las recetas se dividen solo en Dulce y Salado por ahora. «Masa madre» es un ingrediente, no una categoría.</p><span class="fecha">24 oct 2026</span></li>
+    </ol>
+    <div class="callout aviso">
+      <h3>Pendiente de tu parte</h3>
+      <p>Las primeras 3 recetas reales (texto o foto), con sus pasos y tiempos del proceso, y cuántas piezas da cada una.</p>
+    </div>
+  </section>
+
+  <section id="s10">
+    <div class="sec-head"><span class="sec-num">10</span><h2>Historial de cambios</h2></div>
+    <div class="log">
+      <article>
+        <h3>Versión 3 · 24 de octubre de 2026</h3>
+        <ul class="plain">
+          <li>La calculadora escala solo por cantidad de piezas: factor = piezas ÷ rendimiento base. Se quitan el peso por pieza, los tamaños rápidos (500 / 800 / 1,000 g) y el modo de cálculo. Afecta §01, §02, §03, §04, §05 y §07.</li>
+          <li>Se quita la producción combinada: la calculadora y cada lote son de una sola receta. Desaparece la «línea de lote» (§05), y H3 pasa a ser solo componentes (§07).</li>
+          <li>Los componentes se escalan siempre con la receta; ya no «cada uno por separado» (§02).</li>
+          <li>Categorías de receta: Dulce y Salado (§02, §03, §05).</li>
+          <li>Los huevos y demás ingredientes por unidad siempre se muestran en unidades completas (§04).</li>
+          <li>El rendimiento base pasa de la receta a cada versión, y solo los cambios que afectan el cálculo crean versión (§05).</li>
+          <li>El lote tiene dos estados, planeado y horneado, y guarda piezas planeadas y piezas reales (§05).</li>
+          <li>Los ejemplos de cálculo ahora usan piezas (rollos de canela). Son ilustrativos hasta tener las recetas reales.</li>
+        </ul>
+      </article>
+      <article>
+        <h3>Versión 2 · 16 de octubre de 2026</h3>
+        <p>Decisiones 1 a 7 tomadas; se agregan importar recetas y temporizadores del proceso.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer>Elúa Kitchen · Plan de la Fase 1. Este documento reemplaza a los PDF de la versión 2.</footer>
+</main>

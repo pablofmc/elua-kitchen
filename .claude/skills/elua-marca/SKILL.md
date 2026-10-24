@@ -5,7 +5,7 @@ description: Elúa brand and UI rules for Elúa Kitchen — color tokens, contra
 
 # Elúa brand in the app
 
-Sources: `brand/BRAND.md`, `docs/Elua-Kitchen-Fase-1.pdf` §03 and §08. Tokens live in `src/app/globals.css` (`@theme`); use the Tailwind classes, never raw hex in components.
+Sources: `brand/BRAND.md`, `docs/plan-fase-1.html` §03 and §08. Tokens live in `src/app/globals.css` (`@theme`); use the Tailwind classes, never raw hex in components.
 
 ## Color tokens
 
