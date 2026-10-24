@@ -36,7 +36,7 @@ Show both views: % over added flour and % over total flour. Lines flagged `count
 **Precision and display**
 - Keep full precision internally and in snapshots. Round only when formatting.
 - ≥ 100 g → whole grams. < 100 g → one decimal.
-- Unit ingredients (eggs) are always shown as whole units: round to the nearest whole (.5 rounds up, never below 1) → "3 huevos (≈ 150 g)", with the grams of the rounded count. Snapshots still keep full precision.
+- Unit ingredients (eggs) are always shown as whole units: round to the nearest whole (.5 rounds up, never below 1) → "3 huevos (≈ 150 g)", with the grams of the rounded count in whole grams (it is only a guide). Snapshots still keep full precision.
 - Display uses `es-MX` formatting, confirmed by the user: `1,750 g`, `34.6 g`.
 - Weights are raw dough before baking; label it.
 
