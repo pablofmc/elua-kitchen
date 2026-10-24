@@ -345,14 +345,18 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
               </label>
               {step.is_manual ? null : (
                 <>
-                  <div className="grid grid-cols-3 gap-2">
-                    <NumberField id={`${step.key}-duration`} label="Minutos" value={step.duration_minutes} error={errors[`${path}.duration_minutes`]} onChange={(value) => updateStep(s, { duration_minutes: value })} />
+                  <div className="grid grid-cols-2 gap-2">
+                    <NumberField id={`${step.key}-hours`} label="Horas" value={step.duration_hours} invalid={Boolean(errors[`${path}.duration_minutes`])} onChange={(value) => updateStep(s, { duration_hours: value })} />
+                    <NumberField id={`${step.key}-duration`} label="Minutos" value={step.duration_minutes} invalid={Boolean(errors[`${path}.duration_minutes`])} onChange={(value) => updateStep(s, { duration_minutes: value })} />
+                  </div>
+                  <FieldError id={`${step.key}-duration-error`} message={errors[`${path}.duration_minutes`]} />
+                  <ReviewNote id={`${step.key}-duration-review`} message={reviewNote(`${step.key}.duration_minutes`, !step.duration_hours.trim() && !step.duration_minutes.trim(), `${path}.duration_minutes`)} />
+                  <div className="grid grid-cols-2 gap-2">
                     <NumberField id={`${step.key}-repeats`} label="Veces" value={step.repeats} placeholder="1" error={errors[`${path}.repeats`]} onChange={(value) => updateStep(s, { repeats: value })} />
                     {repeats > 1 ? (
                       <NumberField id={`${step.key}-interval`} label="Cada (min)" value={step.interval_minutes} error={errors[`${path}.interval_minutes`]} onChange={(value) => updateStep(s, { interval_minutes: value })} />
                     ) : null}
                   </div>
-                  <ReviewNote id={`${step.key}-duration-review`} message={reviewNote(`${step.key}.duration_minutes`, !step.duration_minutes.trim(), `${path}.duration_minutes`)} />
                   <ReviewNote id={`${step.key}-interval-review`} message={reviewNote(`${step.key}.interval_minutes`, repeats > 1 && !step.interval_minutes.trim(), `${path}.interval_minutes`)} />
                 </>
               )}
@@ -364,7 +368,7 @@ export function RecipeForm({ action, ingredients, initial, submitLabel, withChan
           onClick={() =>
             update((current) => ({
               ...current,
-              steps: [...current.steps, { key: newKey("s"), name: "", is_manual: false, duration_minutes: "", repeats: "", interval_minutes: "" }],
+              steps: [...current.steps, { key: newKey("s"), name: "", is_manual: false, duration_hours: "", duration_minutes: "", repeats: "", interval_minutes: "" }],
             }))
           }
           className="flex min-h-12 w-full items-center justify-center rounded-2xl border border-dashed border-cafe-oscuro/50 font-semibold text-cafe-oscuro hover:bg-white"
@@ -409,7 +413,24 @@ function ReviewNote({ id, message }: { id: string; message?: string }) {
   );
 }
 
-function NumberField({ id, label, value, placeholder, error, onChange }: { id: string; label: string; value: string; placeholder?: string; error?: string; onChange: (value: string) => void }) {
+function NumberField({
+  id,
+  label,
+  value,
+  placeholder,
+  error,
+  invalid = Boolean(error),
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  error?: string;
+  /** For fields that share one error message shown elsewhere. */
+  invalid?: boolean;
+  onChange: (value: string) => void;
+}) {
   return (
     <div>
       <label htmlFor={id} className="block text-xs font-medium text-tinta-suave">{label}</label>
@@ -419,7 +440,7 @@ function NumberField({ id, label, value, placeholder, error, onChange }: { id: s
         value={value}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
-        aria-invalid={error ? true : undefined}
+        aria-invalid={invalid ? true : undefined}
         className={`${inputClass} text-right tabular-nums`}
       />
       <FieldError id={`${id}-error`} message={error} />
