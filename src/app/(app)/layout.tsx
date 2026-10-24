@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Nav } from "@/components/nav";
+import { Suspense } from "react";
+import { Nav, NavFrame } from "@/components/nav";
 import { signOut } from "../login/actions";
 import logo from "../../../public/brand/logo-horizontal-cafe.png";
 
@@ -13,7 +14,9 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
         </Link>
         <SignOutButton className="md:hidden" />
       </header>
-      <Nav footer={<SignOutButton className="hidden md:block" />} />
+      <Suspense fallback={<NavFrame pathname={null} footer={<SignOutButton className="hidden md:block" />} />}>
+        <Nav footer={<SignOutButton className="hidden md:block" />} />
+      </Suspense>
       <main className="mx-auto max-w-3xl px-4 py-6 md:px-8 md:py-10">{children}</main>
     </div>
   );
