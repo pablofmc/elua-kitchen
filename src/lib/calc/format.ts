@@ -38,3 +38,10 @@ export function formatQuantity(line: { name: string; quantity: number; unit: Uni
 export function formatPercent(fraction: number): string {
   return `${oneDecimal.format(fraction * 100)} %`;
 }
+
+const factorFormat = new Intl.NumberFormat("es-MX", { maximumFractionDigits: 2 });
+
+/** The scaling factor as a short label: 3 → "×3", 2.5 → "×2.5", 1/3 → "×0.33". */
+export function formatFactor(factor: number): string {
+  return `×${factorFormat.format(factor)}`;
+}

@@ -31,6 +31,15 @@ export function totalGrams(recipe: CalcRecipe): number {
   return recipe.components.reduce((sum, component) => sum + component.lines.reduce((acc, line) => acc + lineGrams(line), 0), 0);
 }
 
+export const MAX_PIECES = 9999;
+
+/** Pieces to calculate from what was typed: whole, 1 to MAX_PIECES. Null when it isn't a usable number. */
+export function parsePieces(raw: string | number | null | undefined): number | null {
+  const value = typeof raw === "number" ? raw : Number(String(raw ?? "").trim().replace(/,/g, ""));
+  if (!Number.isFinite(value) || String(raw ?? "").trim() === "") return null;
+  return Math.min(MAX_PIECES, Math.max(1, Math.round(value)));
+}
+
 /** Every line of every component multiplied by pieces ÷ base yield. Full precision. */
 export function scaleRecipe(recipe: CalcRecipe, pieces: number): CalcRecipe & { factor: number } {
   const factor = pieces / recipe.baseYield;

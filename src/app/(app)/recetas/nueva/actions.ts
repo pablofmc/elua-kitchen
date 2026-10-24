@@ -34,6 +34,6 @@ export async function createRecipe(_prev: RecipeFormState, formData: FormData): 
     return { status: "error", message: "No se pudo guardar la receta. Intenta de nuevo." };
   }
 
-  revalidatePath("/recetas", "layout");
+  revalidatePath("/", "layout");
   redirect(`/recetas/${recipeId}`);
 }
