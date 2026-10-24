@@ -143,7 +143,12 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "add_recipe_version":
+{ Args: { "p_recipe_id": number,"p_version": Json }; Returns: number
+                           },
+"create_recipe":
+{ Args: { "p_category": Database["public"]['Enums']["recipe_category"],"p_name": string,"p_photo_path"?: string,"p_version": Json }; Returns: number
+                           }
           }
           Enums: {
             "ingredient_kind": "harina"|"liquido"|"masa_madre"|"sal"|"grasa"|"azucar"|"otro","recipe_category": "dulce"|"salado","unit": "g"|"ml"|"unidad"

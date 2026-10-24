@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { primaryButtonClass } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Recetas" };
 
@@ -13,6 +14,9 @@ export default function RecetasPage() {
           Ingredientes
         </Link>
       </div>
+      <Link href="/recetas/nueva" className={`${primaryButtonClass} w-full`}>
+        Nueva receta
+      </Link>
       <EmptyState title="Aún no hay recetas">Crea una receta o impórtala desde un texto o una foto.</EmptyState>
     </div>
   );
