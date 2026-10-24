@@ -1,8 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import type { Database } from "./database.types";
 
 export async function createClient() {
+  // supabase-js reads the clock while setting up the session, which must not happen during prerender.
+  await connection();
   const cookieStore = await cookies();
 
   return createServerClient<Database>(

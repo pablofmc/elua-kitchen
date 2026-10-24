@@ -24,8 +24,14 @@ function Icon({ d }: { d: string }) {
 
 /** Bottom tab bar on phones, side menu from md up. */
 export function Nav({ footer }: { footer?: React.ReactNode }) {
-  const pathname = usePathname();
+  return <NavFrame pathname={usePathname()} footer={footer} />;
+}
 
+/**
+ * The tab bar itself. On dynamic routes the pathname is request data, so the layout shows this
+ * with no active tab (pathname null) until the real one streams in.
+ */
+export function NavFrame({ pathname, footer }: { pathname: string | null; footer?: React.ReactNode }) {
   return (
     <nav
       aria-label="Principal"
@@ -33,7 +39,7 @@ export function Nav({ footer }: { footer?: React.ReactNode }) {
     >
       <ul className="grid grid-cols-4 md:flex md:flex-col md:gap-1">
         {TABS.map((tab) => {
-          const active = isActive(pathname, tab.href);
+          const active = pathname !== null && isActive(pathname, tab.href);
           return (
             <li key={tab.href}>
               <Link
