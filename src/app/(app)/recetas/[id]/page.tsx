@@ -8,6 +8,7 @@ import { loadRecipeDetail, type StepView } from "@/lib/recipe-data";
 import { CATEGORY_LABELS } from "@/lib/recipes";
 import { createClient } from "@/lib/supabase/server";
 import { RecipeView } from "./recipe-view";
+import { StartProcessButton } from "./start-process-button";
 
 export const metadata: Metadata = { title: "Receta" };
 
@@ -74,11 +75,14 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">,
         ) : (
           <button type="button" disabled aria-describedby="old-version-calc" className={primaryButtonClass}>Calcular</button>
         )}
-        <button type="button" disabled aria-describedby="coming-next" className={secondaryButtonClass}>Iniciar proceso</button>
+        {detail.isCurrent ? (
+          <StartProcessButton recipeId={detail.id} hasSteps={detail.steps.length > 0} />
+        ) : (
+          <button type="button" disabled aria-describedby="old-version-calc" className={secondaryButtonClass}>Iniciar proceso</button>
+        )}
         {!detail.isCurrent ? (
-          <p id="old-version-calc" className="col-span-2 -mt-1 text-xs text-tinta-suave">Calcular usa la versión actual de la receta.</p>
+          <p id="old-version-calc" className="col-span-2 -mt-1 text-xs text-tinta-suave">Calcular e Iniciar proceso usan la versión actual de la receta.</p>
         ) : null}
-        <p id="coming-next" className="col-span-2 -mt-1 text-xs text-tinta-suave">Iniciar proceso llega en un siguiente hito.</p>
       </div>
 
       <RecipeView recipe={detail.recipe} />
