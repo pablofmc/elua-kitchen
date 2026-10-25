@@ -57,3 +57,16 @@ _Evitar_: Rendimiento real, piezas obtenidas
 **Escalar**:
 Multiplicar todos los ingredientes de una receta por el mismo factor para obtener otro número de piezas (p. ej. de 10 a 30 rollos: factor 3).
 _Evitar_: Convertir, ajustar
+
+### Proceso
+
+**Paso**:
+Una etapa del proceso de una versión (autólisis, pliegues, fermentación, formado). Tiene un tiempo, o es manual y termina cuando se toca «Listo».
+_Evitar_: Etapa, fase
+
+**Paso repetido**:
+Un paso que se hace varias veces con un intervalo, como «4 pliegues cada 30 min». Cada vez se toca «Listo» al hacerla y entonces corre el intervalo hasta la siguiente; después de la última sigue el siguiente paso.
+
+**Proceso**:
+Una receta en marcha: se inicia, avanza paso por paso con sus tiempos y avisa cuando termina cada uno. Puede haber varios procesos a la vez.
+_Evitar_: Timer, ejecución, corrida

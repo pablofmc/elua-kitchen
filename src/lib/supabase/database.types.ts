@@ -63,6 +63,26 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"process_runs": {
+                  Row: {
+                    "ends_at": string | null,"id": number,"log": NonNullable<Json>,"notified_at": string | null,"recipe_version_id": number,"remaining_seconds": number | null,"slot_index": number,"slot_started_at": string,"started_at": string,"status": Database["public"]['Enums']["process_status"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ends_at"?: string | null,"id"?: never,"log"?: NonNullable<Json>,"notified_at"?: string | null,"recipe_version_id": number,"remaining_seconds"?: number | null,"slot_index"?: number,"slot_started_at"?: string,"started_at"?: string,"status"?: Database["public"]['Enums']["process_status"],"updated_at"?: string
+                  }
+                  Update: {
+                    "ends_at"?: string | null,"id"?: never,"log"?: NonNullable<Json>,"notified_at"?: string | null,"recipe_version_id"?: number,"remaining_seconds"?: number | null,"slot_index"?: number,"slot_started_at"?: string,"started_at"?: string,"status"?: Database["public"]['Enums']["process_status"],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "process_runs_recipe_version_id_fkey"
+      columns: ["recipe_version_id"]
+isOneToOne: false
+      referencedRelation: "recipe_versions"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"process_steps": {
                   Row: {
                     "duration_minutes": number | null,"id": number,"interval_minutes": number | null,"is_manual": boolean,"name": string,"position": number,"repeats": number,"version_id": number
@@ -154,7 +174,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "ingredient_kind": "harina"|"liquido"|"masa_madre"|"sal"|"grasa"|"azucar"|"otro","recipe_category": "dulce"|"salado","unit": "g"|"ml"|"unidad"
+            "ingredient_kind": "harina"|"liquido"|"masa_madre"|"sal"|"grasa"|"azucar"|"otro","process_status": "activo"|"terminado"|"cancelado","recipe_category": "dulce"|"salado","unit": "g"|"ml"|"unidad"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -274,7 +294,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "ingredient_kind": ["harina", "liquido", "masa_madre", "sal", "grasa", "azucar", "otro"],"recipe_category": ["dulce", "salado"],"unit": ["g", "ml", "unidad"]
+            "ingredient_kind": ["harina", "liquido", "masa_madre", "sal", "grasa", "azucar", "otro"],"process_status": ["activo", "terminado", "cancelado"],"recipe_category": ["dulce", "salado"],"unit": ["g", "ml", "unidad"]
           }
         }
 } as const
