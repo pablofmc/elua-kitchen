@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bakersPercent, hydration, lineGrams, parsePieces, scaleRecipe, totalGrams, type CalcLine, type CalcRecipe } from "./index";
+import { bakersPercent, componentGrams, hydration, lineGrams, parsePieces, scaleRecipe, totalGrams, type CalcLine, type CalcRecipe } from "./index";
 import { formatFactor, formatGrams, formatList, formatPercent, formatQuantity } from "./format";
 
 // Golden cases from .claude/skills/elua-calculos/SKILL.md. Test fixtures, not Elúa's real recipes.
@@ -115,13 +115,13 @@ describe("copy list", () => {
       [
         "Rollos de canela · 30 piezas (×3)",
         "",
-        "MASA",
+        "MASA (2,610 g)",
         "Harina: 1,500 g",
         "Leche: 780 g",
         "Huevo: 3 huevos (≈ 150 g)",
         "Azúcar: 180 g",
         "",
-        "RELLENO",
+        "RELLENO (477 g)",
         "Mantequilla: 240 g",
         "Azúcar: 210 g",
         "Canela: 27.0 g",
@@ -135,5 +135,19 @@ describe("copy list", () => {
     expect(formatList("Hogaza", scaleRecipe(classic, 1))).toBe(
       ["Hogaza · 1 pieza (×1)", "", "Harina: 350 g", "Agua: 220 g", "Masa madre: 70.0 g", "Sal: 7.0 g", "", "Total, antes de hornear: 647 g"].join("\n"),
     );
+  });
+});
+
+describe("weight of each part", () => {
+  it("rolls × 30: masa 2,610 g, relleno 477 g, total 3,087 g", () => {
+    const scaled = scaleRecipe(rolls, 30);
+    expect(scaled.components.map((component) => formatGrams(componentGrams(component)))).toEqual(["2,610 g", "477 g"]);
+    expect(formatGrams(totalGrams(scaled))).toBe("3,087 g");
+  });
+
+  it("sums at full precision before rounding", () => {
+    const scaled = scaleRecipe(rolls, 25);
+    expect(componentGrams(scaled.components[1])).toBeCloseTo(397.5);
+    expect(formatGrams(componentGrams(scaled.components[1]))).toBe("398 g");
   });
 });

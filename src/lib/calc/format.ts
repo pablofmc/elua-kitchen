@@ -1,5 +1,5 @@
 import type { Unit } from "@/lib/ingredients";
-import { lineGrams, totalGrams, type CalcRecipe } from "./index";
+import { componentGrams, lineGrams, totalGrams, type CalcRecipe } from "./index";
 
 const whole = new Intl.NumberFormat("es-MX", { maximumFractionDigits: 0 });
 const oneDecimal = new Intl.NumberFormat("es-MX", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -56,7 +56,7 @@ export function formatList(name: string, scaled: CalcRecipe & { factor: number }
   const several = scaled.components.length > 1;
   for (const component of scaled.components) {
     lines.push("");
-    if (several) lines.push(component.name.toUpperCase());
+    if (several) lines.push(`${component.name.toUpperCase()} (${formatGrams(componentGrams(component))})`);
     for (const line of component.lines) lines.push(`${line.name}: ${formatQuantity(line)}`);
   }
   lines.push("", `Total, antes de hornear: ${formatGrams(totalGrams(scaled))}`);
