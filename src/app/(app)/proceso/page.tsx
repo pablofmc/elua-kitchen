@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { cardClass } from "@/components/ui";
 import { loadRuns, serverTime } from "@/lib/process-data";
 import { createClient } from "@/lib/supabase/server";
+import { PushToggle } from "./push-toggle";
 import { RunLine } from "./run-line";
 
 export const metadata: Metadata = { title: "Procesos" };
@@ -13,6 +14,7 @@ export default function ProcesosPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Procesos</h1>
+      <PushToggle />
       <Suspense fallback={<p className="text-sm text-tinta-suave">Cargando procesos…</p>}>
         <Runs />
       </Suspense>
