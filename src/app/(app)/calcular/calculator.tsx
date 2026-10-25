@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FieldError } from "@/components/field-error";
 import { cardClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
-import { MAX_PIECES, parsePieces, scaleRecipe, totalGrams, type CalcRecipe } from "@/lib/calc";
+import { componentGrams, MAX_PIECES, parsePieces, scaleRecipe, totalGrams, type CalcRecipe } from "@/lib/calc";
 import { formatFactor, formatGrams, formatList, formatQuantity } from "@/lib/calc/format";
 import { CATEGORY_LABELS, type RecipeCategory } from "@/lib/recipes";
 
@@ -104,7 +104,12 @@ function Result({ selected }: { selected: Selected }) {
         <div className={`${cardClass} overflow-hidden`}>
           {scaled.components.map((component, c) => (
             <div key={c}>
-              {several ? <h3 className="bg-crema px-4 py-2 text-xs font-bold uppercase tracking-wider">{component.name}</h3> : null}
+              {several ? (
+                <h3 className="flex items-baseline justify-between gap-3 bg-crema px-4 py-2 text-xs font-bold uppercase tracking-wider">
+                  <span>{component.name}</span>
+                  <span className="text-sm normal-case tracking-normal tabular-nums">{formatGrams(componentGrams(component))}</span>
+                </h3>
+              ) : null}
               <ul className="divide-y divide-borde">
                 {component.lines.map((line, l) => (
                   <li key={l} className="flex items-baseline justify-between gap-3 px-4 py-3">

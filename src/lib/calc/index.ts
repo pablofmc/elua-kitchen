@@ -27,8 +27,13 @@ export function lineGrams(line: Pick<CalcLine, "quantity" | "unit" | "gramsPerUn
   return line.quantity;
 }
 
+/** What one part (masa, relleno…) weighs, at full precision. */
+export function componentGrams(component: CalcComponent): number {
+  return component.lines.reduce((sum, line) => sum + lineGrams(line), 0);
+}
+
 export function totalGrams(recipe: CalcRecipe): number {
-  return recipe.components.reduce((sum, component) => sum + component.lines.reduce((acc, line) => acc + lineGrams(line), 0), 0);
+  return recipe.components.reduce((sum, component) => sum + componentGrams(component), 0);
 }
 
 export const MAX_PIECES = 9999;

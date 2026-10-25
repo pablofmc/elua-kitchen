@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cardClass } from "@/components/ui";
-import { bakersPercent, hydration, totalGrams, type CalcRecipe } from "@/lib/calc";
+import { bakersPercent, componentGrams, hydration, totalGrams, type CalcRecipe } from "@/lib/calc";
 import { formatGrams, formatPercent, formatQuantity } from "@/lib/calc/format";
 
 type Mode = "gramos" | "porcentaje";
@@ -42,7 +42,10 @@ export function RecipeView({ recipe }: { recipe: CalcRecipe }) {
         {recipe.components.map((component) => (
           <div key={component.name}>
             {several ? (
-              <h3 className="bg-crema px-4 py-2 text-xs font-bold uppercase tracking-wider">{component.name}</h3>
+              <h3 className="flex items-baseline justify-between gap-3 bg-crema px-4 py-2 text-xs font-bold uppercase tracking-wider">
+                <span>{component.name}</span>
+                {showPercent ? null : <span className="text-sm normal-case tracking-normal tabular-nums">{formatGrams(componentGrams(component))}</span>}
+              </h3>
             ) : null}
             <ul className="divide-y divide-borde">
               {component.lines.map((line, index) => (
