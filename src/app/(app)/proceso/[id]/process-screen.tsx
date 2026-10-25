@@ -8,6 +8,7 @@ import { useClock } from "@/components/use-clock";
 import { formatCountdown, secondsLeft, slotTitle, type Slot } from "@/lib/process";
 import type { ProcessRun } from "@/lib/process-data";
 import { moveProcess, type Move } from "../actions";
+import { PushToggle } from "../push-toggle";
 
 const timeFormat = new Intl.DateTimeFormat("es-MX", { hour: "numeric", minute: "2-digit" });
 
@@ -145,6 +146,8 @@ export function ProcessScreen({ run, serverNow }: { run: ProcessRun; serverNow: 
           </Link>
         </section>
       )}
+
+      {state.status === "activo" ? <PushToggle /> : null}
 
       <StepList run={run} />
 
