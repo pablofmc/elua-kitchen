@@ -67,3 +67,19 @@ export async function loadBatches(supabase: Client, { status, limit = 200 }: { s
   // Lists don't show photos; skip signing them.
   return rows.map((row) => toBatch(row, new Map()));
 }
+
+/**
+ * Recipes worth a shortcut on Inicio: the ones in the latest batches first, then the most
+ * recently edited, without repeats.
+ */
+export async function loadRecentRecipes(supabase: Client, limit = 4): Promise<{ id: number; name: string; category: Database["public"]["Enums"]["recipe_category"] }[]> {
+  const [{ data: used, error: usedError }, { data: edited, error: editedError }] = await Promise.all([
+    supabase.from("batches").select("recipe_versions(recipes(id, name, category))").order("created_at", { ascending: false }).limit(30),
+    supabase.from("recipes").select("id, name, category").order("updated_at", { ascending: false }).limit(limit),
+  ]);
+  if (usedError) throw usedError;
+  if (editedError) throw editedError;
+  const fromBatches = (used as unknown as { recipe_versions: { recipes: { id: number; name: string; category: "dulce" | "salado" } } }[]).map((row) => row.recipe_versions.recipes);
+  const seen = new Set<number>();
+  return [...fromBatches, ...edited].filter((recipe) => !seen.has(recipe.id) && seen.add(recipe.id)).slice(0, limit);
+}
