@@ -5,12 +5,12 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { FieldError } from "@/components/field-error";
 import { cardClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
 import { useClock } from "@/components/use-clock";
+import { formatTime } from "@/lib/dates";
 import { formatCountdown, secondsLeft, slotTitle, type Slot } from "@/lib/process";
 import type { ProcessRun } from "@/lib/process-data";
 import { moveProcess, type Move } from "../actions";
 import { PushToggle } from "../push-toggle";
 
-const timeFormat = new Intl.DateTimeFormat("es-MX", { hour: "numeric", minute: "2-digit" });
 
 function minutesLabel(seconds: number) {
   const minutes = Math.round(seconds / 60);
@@ -68,7 +68,13 @@ export function ProcessScreen({ run, serverNow }: { run: ProcessRun; serverNow: 
       <header>
         <h1 className="text-3xl font-extrabold tracking-tight">{run.recipeName}</h1>
         <p className="mt-1 text-sm text-tinta-suave">
-          Versión {run.versionNumber} · iniciado a las {timeFormat.format(new Date(run.startedAt))}
+          Versión {run.versionNumber} · iniciado a las {formatTime(run.startedAt)}
+          {run.batchId ? (
+            <>
+              {" · "}
+              <Link href={`/lotes/${run.batchId}`} className="font-semibold text-cafe-oscuro underline">Ver lote</Link>
+            </>
+          ) : null}
         </p>
       </header>
 
@@ -139,7 +145,7 @@ export function ProcessScreen({ run, serverNow }: { run: ProcessRun; serverNow: 
         <section className={`${cardClass} space-y-2 p-5`}>
           <h2 className="text-2xl font-extrabold">{state.status === "terminado" ? "Proceso terminado" : "Proceso cancelado"}</h2>
           <p className="text-sm text-tinta-suave">
-            {state.status === "terminado" ? "Terminó" : "Se canceló"} a las {timeFormat.format(new Date(state.slotStartedAt))}.
+            {state.status === "terminado" ? "Terminó" : "Se canceló"} a las {formatTime(state.slotStartedAt)}.
           </p>
           <Link href={`/recetas/${run.recipeId}`} className="inline-flex min-h-11 items-center font-semibold text-cafe-oscuro underline">
             Ver la receta
@@ -197,7 +203,7 @@ function StepList({ run }: { run: ProcessRun }) {
           const label = skipped
             ? "Omitido"
             : finished && entries.length
-              ? `Listo · ${timeFormat.format(new Date(entries.at(-1)!.endedAt))}`
+              ? `Listo · ${formatTime(entries.at(-1)!.endedAt)}`
               : isCurrent
                 ? folds ?? "Ahora"
                 : first.kind === "timer"

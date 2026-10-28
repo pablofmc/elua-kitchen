@@ -5,7 +5,7 @@ import { FieldError } from "@/components/field-error";
 import { secondaryButtonClass } from "@/components/ui";
 import { startProcess } from "../../proceso/actions";
 
-export function StartProcessButton({ recipeId, hasSteps }: { recipeId: number; hasSteps: boolean }) {
+export function StartProcessButton({ recipeId, hasSteps, batchId }: { recipeId: number; hasSteps: boolean; batchId?: number }) {
   const [pending, start] = useTransition();
   const [error, setError] = useState<string>();
 
@@ -25,7 +25,7 @@ export function StartProcessButton({ recipeId, hasSteps }: { recipeId: number; h
         disabled={pending}
         onClick={() =>
           start(async () => {
-            const result = await startProcess(recipeId);
+            const result = await startProcess(recipeId, batchId);
             if (result?.error) setError(result.error);
           })
         }

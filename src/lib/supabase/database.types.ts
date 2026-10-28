@@ -85,17 +85,23 @@ isOneToOne: false
                   ]
                 },"process_runs": {
                   Row: {
-                    "ends_at": string | null,"id": number,"log": NonNullable<Json>,"notified_at": string | null,"recipe_version_id": number,"remaining_seconds": number | null,"slot_index": number,"slot_started_at": string,"started_at": string,"status": Database["public"]['Enums']["process_status"],"updated_at": string
+                    "batch_id": number | null,"ends_at": string | null,"id": number,"log": NonNullable<Json>,"notified_at": string | null,"recipe_version_id": number,"remaining_seconds": number | null,"slot_index": number,"slot_started_at": string,"started_at": string,"status": Database["public"]['Enums']["process_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "ends_at"?: string | null,"id"?: never,"log"?: NonNullable<Json>,"notified_at"?: string | null,"recipe_version_id": number,"remaining_seconds"?: number | null,"slot_index"?: number,"slot_started_at"?: string,"started_at"?: string,"status"?: Database["public"]['Enums']["process_status"],"updated_at"?: string
+                    "batch_id"?: number | null,"ends_at"?: string | null,"id"?: never,"log"?: NonNullable<Json>,"notified_at"?: string | null,"recipe_version_id": number,"remaining_seconds"?: number | null,"slot_index"?: number,"slot_started_at"?: string,"started_at"?: string,"status"?: Database["public"]['Enums']["process_status"],"updated_at"?: string
                   }
                   Update: {
-                    "ends_at"?: string | null,"id"?: never,"log"?: NonNullable<Json>,"notified_at"?: string | null,"recipe_version_id"?: number,"remaining_seconds"?: number | null,"slot_index"?: number,"slot_started_at"?: string,"started_at"?: string,"status"?: Database["public"]['Enums']["process_status"],"updated_at"?: string
+                    "batch_id"?: number | null,"ends_at"?: string | null,"id"?: never,"log"?: NonNullable<Json>,"notified_at"?: string | null,"recipe_version_id"?: number,"remaining_seconds"?: number | null,"slot_index"?: number,"slot_started_at"?: string,"started_at"?: string,"status"?: Database["public"]['Enums']["process_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "process_runs_batch_id_fkey"
+      columns: ["batch_id"]
+isOneToOne: false
+      referencedRelation: "batches"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "process_runs_recipe_version_id_fkey"
       columns: ["recipe_version_id"]
 isOneToOne: false

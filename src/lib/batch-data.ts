@@ -21,6 +21,8 @@ export type Batch = {
   photoPath: string | null;
   photoUrl: string | null;
   bakedAt: string | null;
+  /** The latest process started from this batch, if any. */
+  process: { id: number; status: Database["public"]["Enums"]["process_status"] } | null;
 };
 
 const COLUMNS =
@@ -46,6 +48,7 @@ function toBatch(row: Row, photoUrls: Map<string, string>): Batch {
     photoPath: row.photo_path,
     photoUrl: row.photo_path ? photoUrls.get(row.photo_path) ?? null : null,
     bakedAt: row.baked_at,
+    process: null,
   };
 }
 
@@ -54,7 +57,12 @@ export async function loadBatch(supabase: Client, id: number): Promise<Batch | n
   if (error) throw error;
   if (!data) return null;
   const row = data as unknown as Row;
-  return toBatch(row, await signPhotoUrls(supabase, [row.photo_path]));
+  const [photoUrls, { data: runs, error: runsError }] = await Promise.all([
+    signPhotoUrls(supabase, [row.photo_path]),
+    supabase.from("process_runs").select("id, status").eq("batch_id", id).order("started_at", { ascending: false }).limit(1),
+  ]);
+  if (runsError) throw runsError;
+  return { ...toBatch(row, photoUrls), process: runs[0] ?? null };
 }
 
 /** Newest production day first. */
