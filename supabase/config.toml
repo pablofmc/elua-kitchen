@@ -244,6 +244,17 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Sign-in emails carry a 6-digit code (typed in the installed app, which on iPhone doesn't share
+# Safari's session) and a link for computers. The hosted project uses the same HTML: paste both
+# files into Authentication → Emails → Templates (Magic link, Confirm signup).
+[auth.email.template.magic_link]
+subject = "Tu código para entrar a Elúa Kitchen"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.confirmation]
+subject = "Tu código para entrar a Elúa Kitchen"
+content_path = "./supabase/templates/confirmation.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
