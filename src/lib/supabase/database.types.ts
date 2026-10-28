@@ -23,7 +23,27 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "ingredient_lines": {
+            "batches": {
+                  Row: {
+                    "actual_pieces": number | null,"baked_at": string | null,"created_at": string,"id": number,"notes": string | null,"photo_path": string | null,"planned_pieces": number,"production_date": string,"rating": number | null,"recipe_name": string,"recipe_version_id": number,"snapshot": NonNullable<Json>,"status": Database["public"]['Enums']["batch_status"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actual_pieces"?: number | null,"baked_at"?: string | null,"created_at"?: string,"id"?: never,"notes"?: string | null,"photo_path"?: string | null,"planned_pieces": number,"production_date"?: string,"rating"?: number | null,"recipe_name": string,"recipe_version_id": number,"snapshot": NonNullable<Json>,"status"?: Database["public"]['Enums']["batch_status"],"updated_at"?: string
+                  }
+                  Update: {
+                    "actual_pieces"?: number | null,"baked_at"?: string | null,"created_at"?: string,"id"?: never,"notes"?: string | null,"photo_path"?: string | null,"planned_pieces"?: number,"production_date"?: string,"rating"?: number | null,"recipe_name"?: string,"recipe_version_id"?: number,"snapshot"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["batch_status"],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "batches_recipe_version_id_fkey"
+      columns: ["recipe_version_id"]
+isOneToOne: false
+      referencedRelation: "recipe_versions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"ingredient_lines": {
                   Row: {
                     "component_id": number,"counts_as_flour": boolean,"id": number,"ingredient_id": number,"position": number,"quantity": number,"unit": Database["public"]['Enums']["unit"]
                   }
@@ -188,7 +208,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "ingredient_kind": "harina"|"liquido"|"masa_madre"|"sal"|"grasa"|"azucar"|"otro","process_status": "activo"|"terminado"|"cancelado","recipe_category": "dulce"|"salado","unit": "g"|"ml"|"unidad"
+            "batch_status": "planeado"|"horneado","ingredient_kind": "harina"|"liquido"|"masa_madre"|"sal"|"grasa"|"azucar"|"otro","process_status": "activo"|"terminado"|"cancelado","recipe_category": "dulce"|"salado","unit": "g"|"ml"|"unidad"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -308,7 +328,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "ingredient_kind": ["harina", "liquido", "masa_madre", "sal", "grasa", "azucar", "otro"],"process_status": ["activo", "terminado", "cancelado"],"recipe_category": ["dulce", "salado"],"unit": ["g", "ml", "unidad"]
+            "batch_status": ["planeado", "horneado"],"ingredient_kind": ["harina", "liquido", "masa_madre", "sal", "grasa", "azucar", "otro"],"process_status": ["activo", "terminado", "cancelado"],"recipe_category": ["dulce", "salado"],"unit": ["g", "ml", "unidad"]
           }
         }
 } as const
