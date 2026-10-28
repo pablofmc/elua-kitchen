@@ -1,0 +1,11 @@
+<div style="font-family: Montserrat, Arial, sans-serif; max-width: 420px; margin: 0 auto; padding: 32px 24px; background: #fdf4ee; color: #3a2a20; border-radius: 16px">
+  <p style="margin: 0 0 8px; font-size: 14px; color: #6b5446">Elúa Kitchen</p>
+  <h1 style="margin: 0 0 16px; font-size: 22px">Tu código para entrar</h1>
+  <p style="margin: 0 0 8px; font-size: 15px">Escríbelo en la app:</p>
+  <p style="margin: 0 0 24px; font-size: 36px; font-weight: 800; letter-spacing: 8px">{{ .Token }}</p>
+  <p style="margin: 0 0 12px; font-size: 14px; color: #6b5446">O, si estás en la computadora, entra con este botón:</p>
+  <p style="margin: 0 0 24px">
+    <a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email" style="display: inline-block; padding: 12px 20px; border-radius: 10px; background: #9a5426; color: #ffffff; font-weight: 700; text-decoration: none">Entrar a Elúa Kitchen</a>
+  </p>
+  <p style="margin: 0; font-size: 12px; color: #6b5446">El código y el botón sirven una sola vez y vencen en una hora. Si no pediste entrar, ignora este correo.</p>
+</div>

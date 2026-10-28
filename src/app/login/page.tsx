@@ -16,7 +16,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
     <main className="flex min-h-dvh flex-col items-center justify-center bg-crema px-4 py-10">
       <div className="w-full max-w-sm">
         <Image src={logo} alt="Elúa" priority className="mx-auto mb-8 h-32 w-auto" />
-        <p className="mb-6 text-center text-sm text-tinta-suave">Te enviaremos un enlace a tu correo para entrar.</p>
+        <p className="mb-6 text-center text-sm text-tinta-suave">Te enviaremos un código a tu correo para entrar.</p>
         <Suspense>
           <Form searchParams={searchParams} />
         </Suspense>
