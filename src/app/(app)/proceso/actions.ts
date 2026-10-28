@@ -3,21 +3,27 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { advance, cancel, completeFold, extend, pause, resume, skipStep, startRun, expandSteps } from "@/lib/process";
+import { loadBatch } from "@/lib/batch-data";
 import { loadRun, stateColumns } from "@/lib/process-data";
 import { loadRecipeDetail } from "@/lib/recipe-data";
 import { createActionClient } from "@/lib/supabase/auth";
 
-/** Starts a process on the recipe's current version and opens it. */
-export async function startProcess(recipeId: number): Promise<{ error: string }> {
+/**
+ * Starts a process and opens it: on the recipe's current version, or, from a batch, on the version
+ * that batch was calculated with.
+ */
+export async function startProcess(recipeId: number, batchId?: number): Promise<{ error: string }> {
   const supabase = await createActionClient();
-  const detail = await loadRecipeDetail(supabase, recipeId);
+  const batch = batchId === undefined ? null : await loadBatch(supabase, batchId);
+  if (batchId !== undefined && !batch) return { error: "Este lote ya no existe." };
+  const detail = await loadRecipeDetail(supabase, batch?.recipeId ?? recipeId, batch?.versionNumber);
   if (!detail) return { error: "Esta receta ya no existe." };
   const slots = expandSteps(detail.steps);
   if (slots.length === 0) return { error: "Esta receta no tiene pasos. Agrégalos en Editar." };
 
   const { data, error } = await supabase
     .from("process_runs")
-    .insert({ recipe_version_id: detail.version.id, ...stateColumns(startRun(slots, Date.now())) })
+    .insert({ recipe_version_id: detail.version.id, batch_id: batch?.id ?? null, ...stateColumns(startRun(slots, Date.now())) })
     .select("id")
     .single();
   if (error) return { error: "No se pudo iniciar. Intenta de nuevo." };

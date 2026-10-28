@@ -12,6 +12,7 @@ export type ProcessRun = {
   recipeName: string;
   versionNumber: number;
   startedAt: string;
+  batchId: number | null;
   /** Concurrency token: a move only applies if nobody moved the process since it was loaded. */
   updatedAt: string;
   state: RunState;
@@ -19,10 +20,10 @@ export type ProcessRun = {
 };
 
 const RUN_COLUMNS =
-  "id, status, slot_index, slot_started_at, ends_at, remaining_seconds, log, started_at, updated_at, " +
+  "id, status, slot_index, slot_started_at, ends_at, remaining_seconds, log, started_at, updated_at, batch_id, " +
   "recipe_versions(version_number, recipes(id, name), process_steps(position, name, is_manual, duration_minutes, repeats, interval_minutes))";
 
-type RunWithVersion = Pick<RunRow, "id" | "status" | "slot_index" | "slot_started_at" | "ends_at" | "remaining_seconds" | "log" | "started_at" | "updated_at"> & {
+type RunWithVersion = Pick<RunRow, "id" | "status" | "slot_index" | "slot_started_at" | "ends_at" | "remaining_seconds" | "log" | "started_at" | "updated_at" | "batch_id"> & {
   recipe_versions: {
     version_number: number;
     recipes: { id: number; name: string };
@@ -38,6 +39,7 @@ function toRun(row: RunWithVersion): ProcessRun {
     recipeName: row.recipe_versions.recipes.name,
     versionNumber: row.recipe_versions.version_number,
     startedAt: row.started_at,
+    batchId: row.batch_id,
     updatedAt: row.updated_at,
     state: {
       status: row.status,

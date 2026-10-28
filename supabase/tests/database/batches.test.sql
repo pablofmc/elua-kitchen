@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(11);
+select plan(13);
 
 insert into public.recipes (name, category) values ('Rollos', 'dulce');
 insert into public.recipe_versions (recipe_id, version_number, base_yield)
@@ -28,6 +28,12 @@ select throws_ok($$update public.batches set planned_pieces = 40$$, '23514', nul
 select throws_ok($$update public.batches set status = 'horneado'$$, '23514', null, 'a baked batch needs its real pieces');
 select lives_ok($$update public.batches set status = 'horneado', actual_pieces = 28, baked_at = now(), rating = 5, notes = 'Bien'$$, 'member marks it baked');
 select throws_ok($$update public.batches set rating = 6$$, '23514', null, 'rating is 1 to 5');
+
+select lives_ok($$
+  insert into public.process_runs (recipe_version_id, batch_id)
+  select recipe_version_id, id from public.batches
+$$, 'a process can belong to a batch');
+select is((select count(*) from public.process_runs where batch_id is not null), 1::bigint, 'the process knows its batch');
 
 select lives_ok('delete from public.batches', 'deleting a baked batch runs...');
 reset role;

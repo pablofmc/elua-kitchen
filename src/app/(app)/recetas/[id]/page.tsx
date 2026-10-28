@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { cardClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
 import { loadRecipeDetail, type StepView } from "@/lib/recipe-data";
+import { formatDate } from "@/lib/dates";
 import { CATEGORY_LABELS } from "@/lib/recipes";
 import { createClient } from "@/lib/supabase/server";
 import { RecipeView } from "./recipe-view";
@@ -25,7 +26,6 @@ export default function RecetaPage({ params, searchParams }: PageProps<"/recetas
   );
 }
 
-const dateFormat = new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", year: "numeric" });
 
 async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">, "params" | "searchParams">) {
   const supabase = await createClient();
@@ -58,7 +58,7 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">,
             Rinde {pieces} {pieces === 1 ? "pieza" : "piezas"}
           </span>
           <span className="rounded-full border border-borde bg-white px-3 py-1">
-            Versión {detail.version.number} · {dateFormat.format(new Date(detail.version.createdAt))}
+            Versión {detail.version.number} · {formatDate(detail.version.createdAt)}
           </span>
         </div>
         {!detail.isCurrent ? (
@@ -119,7 +119,7 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/recetas/[id]">,
                       {version.number === detail.versions[0].number ? " · actual" : ""}
                     </span>
                     <span className="block text-sm text-tinta-suave">
-                      {dateFormat.format(new Date(version.createdAt))} · rinde {version.baseYield}
+                      {formatDate(version.createdAt)} · rinde {version.baseYield}
                       {version.changeNote ? ` · ${version.changeNote}` : ""}
                     </span>
                   </span>

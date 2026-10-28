@@ -3,11 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ScaledList } from "@/components/scaled-list";
+import { secondaryButtonClass } from "@/components/ui";
 import { loadBatch } from "@/lib/batch-data";
 import { formatProductionDate } from "@/lib/batches";
 import { formatFactor, formatList } from "@/lib/calc/format";
 import { createClient } from "@/lib/supabase/server";
 import { StatusChip } from "../status-chip";
+import { StartProcessButton } from "../../recetas/[id]/start-process-button";
+import { BakeSection } from "./bake-section";
 import { BatchActions } from "./batch-actions";
 
 export const metadata: Metadata = { title: "Lote" };
@@ -50,6 +53,27 @@ async function BatchDetail({ params }: Pick<PageProps<"/lotes/[id]">, "params">)
           </Link>
         </div>
       </header>
+
+      <BakeSection
+        id={batch.id}
+        status={batch.status}
+        plannedPieces={batch.plannedPieces}
+        actualPieces={batch.actualPieces}
+        rating={batch.rating}
+        notes={batch.notes}
+        photoUrl={batch.photoUrl}
+        bakedAt={batch.bakedAt}
+      />
+
+      <div className="grid grid-cols-2 gap-2">
+        {batch.process ? (
+          <Link href={`/proceso/${batch.process.id}`} className={`${secondaryButtonClass} col-span-2`}>
+            {batch.process.status === "activo" ? "Ver el proceso en marcha" : "Ver cómo fue el proceso"}
+          </Link>
+        ) : (
+          <StartProcessButton recipeId={batch.recipeId} batchId={batch.id} hasSteps />
+        )}
+      </div>
 
       <ScaledList recipe={snapshot.recipe} />
       <p className="-mt-3 text-xs text-tinta-suave">
