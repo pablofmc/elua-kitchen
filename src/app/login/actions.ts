@@ -25,7 +25,10 @@ export async function sendMagicLink(prev: LoginState, formData: FormData): Promi
   if (error) {
     return {
       status: "error",
-      message: error.status === 429 ? "Espera un minuto antes de pedir otro código." : "No pudimos enviar el correo. Intenta de nuevo.",
+      message:
+        error.status === 429
+          ? "Ya se enviaron muchos correos en poco tiempo. Espera un rato (hasta una hora) y vuelve a intentar."
+          : "No pudimos enviar el correo. Intenta de nuevo.",
       sends,
     };
   }
